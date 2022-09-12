@@ -11,7 +11,7 @@ const Navbar = styled(Box)(({ theme }) => ({
   display: 'flex',
   justifyContent: 'space-between',
   height: '100vh',
-  width: '80px',
+  width: '72px',
   backgroundColor: theme.palette.primary.main,
 }));
 
@@ -41,7 +41,7 @@ const IconButton = styled(Box)(({ theme }) => ({
   display: 'flex',
   alignItems: 'center',
   justifyContent: 'center',
-  fontSize: 24,
+  fontSize: 18,
   borderRadius: '50px',
   cursor: 'pointer',
   '&: hover': {
@@ -50,7 +50,6 @@ const IconButton = styled(Box)(({ theme }) => ({
 }));
 
 const Navigation = () => {
-  // return <Box sx={(theme) => classes(theme).sidebarWrapper}></Box>;
   return (
     <Navbar>
       <NavbarStart>

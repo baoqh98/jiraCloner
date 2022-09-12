@@ -1,6 +1,8 @@
+import { Box } from '@mui/system';
 import React, { Suspense } from 'react';
 import { Route, Routes } from 'react-router-dom';
 import './App.css';
+import Loader from './UI/Display/Loader/Loader';
 // import MainLayout from './UI/Layout/MainLayout';
 
 const MainLayout = React.lazy(() => import('./UI/Layout/MainLayout'));
@@ -8,7 +10,14 @@ const MainLayout = React.lazy(() => import('./UI/Layout/MainLayout'));
 function App() {
   return (
     <div className='App'>
-      <Suspense fallback={<h1>loading...</h1>}>
+      <Suspense
+        fallback={
+          <>
+            <Box height={160} />
+            <Loader />
+          </>
+        }
+      >
         <Routes>
           <Route path='/' element={<MainLayout />}>
             <Route path='/project' />
