@@ -13,6 +13,7 @@ import {
 } from '@mui/material';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
+  faBarsProgress,
   faBorderNone,
   faBug,
   faChartSimple,
@@ -22,7 +23,7 @@ import {
   faSection,
   faShip,
 } from '@fortawesome/free-solid-svg-icons';
-import { NavLink } from 'react-router-dom';
+import { NavLink, useLocation, useParams } from 'react-router-dom';
 
 const SidebarWrapper = styled(Box)(({ theme }) => ({
   position: 'fixed',
@@ -33,6 +34,7 @@ const SidebarWrapper = styled(Box)(({ theme }) => ({
   textAlign: 'left',
   height: '100vh',
   width: '240px',
+  overflowX: 'hidden',
   backgroundColor: colors.grey[100],
 }));
 
@@ -156,6 +158,7 @@ const Sidebar = () => {
         <MenuList>
           {featuresMenuData.map((item) => (
             <MenuItem
+              key={item.label}
               onMouseEnter={() => setIsMouseEnterData(item.label)}
               onMouseLeave={() => setIsMouseEnterData(null)}
               sx={{
