@@ -11,7 +11,8 @@ import {
 import { alpha, styled } from '@mui/material/styles';
 import {
   faBarsProgress,
-  faHouse,
+  faCompress,
+  faExpand,
   faPlus,
   faSearch,
 } from '@fortawesome/free-solid-svg-icons';
@@ -119,7 +120,6 @@ const Navigation = () => {
         </Image>
         <NavItem
           onClick={() => {
-            setIsProjectManager((prev) => !prev);
             navigate('/project');
           }}
           sx={{ ...navItemStyle() }}
@@ -180,6 +180,30 @@ const Navigation = () => {
                 fontWeight={700}
               >
                 Add Project
+              </Typography>
+            </Fade>
+          </Collapse>
+        </NavItem>
+
+        <NavItem
+          sx={{ ...navItemStyle() }}
+          onClick={() => setIsProjectManager((prev) => !prev)}
+        >
+          <IconButton sx={{ ...iconButtonStyle() }}>
+            {isProjectManager ? (
+              <FontAwesomeIcon icon={faCompress} />
+            ) : (
+              <FontAwesomeIcon icon={faExpand} />
+            )}
+          </IconButton>
+          <Collapse orientation='horizontal' in={isProjectManager}>
+            <Fade in={isProjectManager}>
+              <Typography
+                sx={{ whiteSpace: 'nowrap' }}
+                variant='subtitle1'
+                fontWeight={700}
+              >
+                Close
               </Typography>
             </Fade>
           </Collapse>

@@ -1,6 +1,6 @@
 import React from 'react';
 import { Outlet, useLocation } from 'react-router-dom';
-import { Breadcrumbs, Typography } from '@mui/material';
+import { Breadcrumbs, colors, Typography } from '@mui/material';
 import { styled } from '@mui/material/styles';
 import { Container, Box } from '@mui/system';
 import Grid from '@mui/material/Unstable_Grid2';
@@ -28,6 +28,9 @@ const Content = () => {
                 <Typography
                   sx={{
                     textTransform: 'capitalize',
+                    fontSize: '14px',
+                    color: colors.grey[600],
+                    fontWeight: 700,
                   }}
                   key={item}
                   color='text.primary'

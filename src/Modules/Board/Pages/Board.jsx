@@ -37,7 +37,7 @@ const tagsData = [
 const Board = () => {
   return (
     <Container maxWidth='xl'>
-      <Grid container>
+      <Grid marginTop={2} container>
         <Grid xs={4}>
           <Heading>
             <Typography fontWeight={700} variant='h5' component='h1'>
