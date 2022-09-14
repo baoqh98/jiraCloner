@@ -1,4 +1,5 @@
 import { Container } from '@mui/system';
+import { alpha } from '@mui/system';
 import {
   Typography,
   Box,
@@ -22,6 +23,7 @@ import { useEffect } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPen, faTrash } from '@fortawesome/free-solid-svg-icons';
 import Loader from '../../../UI/Display/Loader/Loader';
+import Members from '../Components/Members/Members';
 
 const Heading = styled(Box)(({ theme }) => ({
   textAlign: 'left',
@@ -40,6 +42,12 @@ const TableCellBody = styled(TableCell)(({ theme }) => ({
   borderBottom: `1.5px solid ${colors.blueGrey[50]}`,
 }));
 
+const categoryProject = {
+  app: 'Dự án phần mềm',
+  web: 'Dự án web',
+  mobile: 'Dự án di động',
+};
+
 const Project = () => {
   const { getAllProjects } = projectAPIs;
   const { data: projects, isLoading } = useRequest(getAllProjects);
@@ -51,30 +59,59 @@ const Project = () => {
       key={row.id}
       sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
     >
-      <TableCellBody sx={{ display: 'flex', flexDirection: 'column' }}>
-        <Typography variant='subtitle2' fontWeight={700}>
-          {row.projectName}
-        </Typography>
+      <TableCellBody>
         <Chip
+          color='info'
+          size='small'
           sx={(theme) => ({
+            borderRadius: '4px',
             fontSize: '12px',
             color: theme.palette.primary.light,
           })}
+          variant='outlined'
           label={`ID: ${row.id}`}
-        ></Chip>
+        />
+      </TableCellBody>
+      <TableCellBody
+        sx={{
+          maxWidth: 160,
+        }}
+      >
+        <Typography variant='subtitle1' fontWeight={700}>
+          {row.projectName}
+        </Typography>
       </TableCellBody>
       <TableCellBody component='th' scope='row'>
-        {row.categoryName}
+        <Chip
+          label={row.categoryName}
+          sx={(theme) => ({
+            color:
+              row.categoryName === categoryProject['app']
+                ? theme.palette.primary.light
+                : row.categoryName === categoryProject['web']
+                ? colors.green[500]
+                : colors.amber[500],
+            backgroundColor:
+              row.categoryName === categoryProject['app']
+                ? alpha(theme.palette.primary.light, 0.2)
+                : row.categoryName === categoryProject['web']
+                ? colors.green[50]
+                : colors.amber[50],
+          })}
+        />
       </TableCellBody>
-      <TableCellBody align='left'>{row.members.length}</TableCellBody>
+      <TableCellBody align='left'>
+        <Members members={row.members} />
+      </TableCellBody>
       <TableCellBody component='th' scope='row'>
         {row.creator.name}
       </TableCellBody>
       <TableCellBody
         sx={(theme) => ({
-          maxWidth: 240,
-          whiteSpace: 'nowrap',
+          maxWidth: 200,
+          textOverflow: 'ellipsis',
           overflow: 'hidden',
+          whiteSpace: 'nowrap',
         })}
         align='left'
       >{`${row.description}`}</TableCellBody>
@@ -82,7 +119,6 @@ const Project = () => {
         <Box
           sx={{
             display: 'flex',
-            justifyContent: 'space-between',
             alignItems: 'center',
           }}
         >
@@ -115,8 +151,7 @@ const Project = () => {
             overflow: 'overlay',
             marginTop: '24px',
             maxHeight: '80vh',
-            border: `2px solid ${colors.blueGrey[100]}`,
-            borderRadius: '8px',
+            borderRadius: '4px',
           })}
         >
           <Table stickyHeader aria-label='sticky table'>
@@ -126,6 +161,7 @@ const Project = () => {
                   backgroundColor: colors.blueGrey[50],
                 })}
               >
+                <TableCellHead align='left'>ID</TableCellHead>
                 <TableCellHead align='left'>Project Name</TableCellHead>
                 <TableCellHead align='left'>Category</TableCellHead>
                 <TableCellHead align='left'>Members</TableCellHead>

@@ -5,11 +5,12 @@ import { useSelector, useDispatch } from 'react-redux';
 import { loginHandler } from './Modules/Auth/slice/authSlice';
 import './App.css';
 import Board from './Modules/Board/Pages/Board';
-import Project from './Modules/Project/Pages/Project';
 import Loader from './UI/Display/Loader/Loader';
+// import Project from './Modules/Project/Pages/Project';
 // import MainLayout from './UI/Layout/MainLayout';
 
 const MainLayout = React.lazy(() => import('./UI/Layout/MainLayout/Pages'));
+const Project = React.lazy(() => import('./Modules/Project/Pages/Project'));
 
 const fakeAuth = {
   email: 'fakeauth@mail.com',
