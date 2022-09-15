@@ -24,6 +24,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPen, faTrash } from '@fortawesome/free-solid-svg-icons';
 import Loader from '../../../UI/Display/Loader/Loader';
 import Members from '../Components/Members/Members';
+import MembersAction from '../Components/MembersAction/MembersAction';
 
 const Heading = styled(Box)(({ theme }) => ({
   textAlign: 'left',
@@ -148,7 +149,8 @@ const Project = () => {
       {!isLoading && (
         <TableContainer
           sx={(theme) => ({
-            overflow: 'overlay',
+            position: 'relative',
+            overflowYz: 'scroll',
             marginTop: '24px',
             maxHeight: '80vh',
             borderRadius: '4px',

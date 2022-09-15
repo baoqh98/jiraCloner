@@ -20,6 +20,7 @@ const Content = () => {
 
   return (
     <ContentWrapper>
+      <div id='draggable'></div>
       <Container maxWidth='xl'>
         <Grid container spacing={4}>
           <Grid xs={12}>
