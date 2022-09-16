@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Avatar, AvatarGroup, Box } from '@mui/material';
+import { Avatar, AvatarGroup, Box, ClickAwayListener } from '@mui/material';
 import MembersAction from '../MembersAction/MembersAction';
 
 const Members = ({ members }) => {
@@ -10,7 +10,7 @@ const Members = ({ members }) => {
   };
 
   return (
-    <Box>
+    <Box sx={{ position: 'relative' }}>
       <AvatarGroup
         onClick={setIsShowActionHandler}
         sx={{ cursor: 'pointer' }}

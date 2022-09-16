@@ -6,11 +6,15 @@ import { loginHandler } from './Modules/Auth/slice/authSlice';
 import './App.css';
 import Board from './Modules/Board/Pages/Board';
 import Loader from './UI/Display/Loader/Loader';
+// import CreateProject from './Modules/Project/Pages/CreateProject';
 // import Project from './Modules/Project/Pages/Project';
 // import MainLayout from './UI/Layout/MainLayout';
 
 const MainLayout = React.lazy(() => import('./UI/Layout/MainLayout/Pages'));
 const Project = React.lazy(() => import('./Modules/Project/Pages/Project'));
+const CreateProject = React.lazy(() =>
+  import('./Modules/Project/Pages/CreateProject')
+);
 
 const fakeAuth = {
   email: 'fakeauth@mail.com',
@@ -41,6 +45,7 @@ function App() {
         <Routes>
           <Route path='/' element={<MainLayout />}>
             <Route path='/project' element={<Project />} />
+            <Route path='/project/create-project' element={<CreateProject />} />
             <Route path='/project'>
               <Route path='board' element={<Board />} />
               <Route path='create-task' />

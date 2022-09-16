@@ -17,14 +17,12 @@ import {
 import Grid from '@mui/material/Unstable_Grid2';
 import React from 'react';
 
-import { useRequest } from '../../../app/hooks/request/useRequest';
-import projectAPIs from '../../../app/apis/projectAPIs/projectAPIs';
-import { useEffect } from 'react';
+import { useRequest } from '../../../../app/hooks/request/useRequest';
+import projectAPIs from '../../../../app/apis/projectAPIs/projectAPIs';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPen, faTrash } from '@fortawesome/free-solid-svg-icons';
-import Loader from '../../../UI/Display/Loader/Loader';
-import Members from '../Components/Members/Members';
-import MembersAction from '../Components/MembersAction/MembersAction';
+import Loader from '../../../../UI/Display/Loader';
+import Members from '../../Components/Members';
 
 const Heading = styled(Box)(({ theme }) => ({
   textAlign: 'left',
@@ -52,8 +50,6 @@ const categoryProject = {
 const Project = () => {
   const { getAllProjects } = projectAPIs;
   const { data: projects, isLoading } = useRequest(getAllProjects);
-
-  console.log(projects);
 
   const rows = projects?.map((row) => (
     <TableRow
