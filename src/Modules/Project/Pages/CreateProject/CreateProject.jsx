@@ -1,4 +1,4 @@
-import React, { useReducer, useState } from 'react';
+import React, { useEffect, useReducer, useState } from 'react';
 import 'draft-js/dist/Draft.css';
 import {
   Chip,
@@ -12,7 +12,6 @@ import {
   Alert,
   Button,
 } from '@mui/material';
-import LoadingButton from '@mui/material/';
 import Grid2 from '@mui/material/Unstable_Grid2/Grid2';
 import { Container } from '@mui/system';
 import RichTextEditor from './RichTextEditor';
@@ -20,9 +19,12 @@ import RichTextEditor from './RichTextEditor';
 import { useRequest } from '../../../../app/hooks/request/useRequest';
 import projectCategory from '../../../../app/apis/projectCategory/projectCategory';
 import { useForm } from 'react-hook-form';
+import { convertToHTML, convertFromHTML } from 'draft-convert';
+import projectAPIs from '../../../../app/apis/projectAPIs/projectAPIs';
 
 //
 const { getProjectCategory } = projectCategory;
+const { createProject } = projectAPIs;
 
 const categoryProjectMap = {
   app: 'Dự án phần mềm',
@@ -74,8 +76,13 @@ const alertReducer = (state, { type, payload }) => {
 };
 
 const CreateProject = () => {
-  const [selectedCategory, setSelectedCategory] = useState(null);
   const { data: projectCategory } = useRequest(getProjectCategory);
+  const { data: request } = useRequest(
+    (projectInfo) => createProject(projectInfo),
+    { isManual: true }
+  );
+  const [selectedCategory, setSelectedCategory] = useState(null);
+  const [description, setDescription] = useState(null);
   const [alertState, dispatchAlert] = useReducer(
     alertReducer,
     initialAlertState
@@ -92,24 +99,32 @@ const CreateProject = () => {
     },
   });
 
-  const onSubmit = ({ projectName }) => {
-    dispatchAlert({ type: alertCase.loading });
-    if (!selectedCategory) {
+  const onSubmit = async ({ projectName }) => {
+    try {
+      dispatchAlert({ type: alertCase.loading });
+      if (!selectedCategory) {
+        dispatchAlert({
+          type: alertCase.error,
+          payload: "You haven't selected category",
+        });
+        return;
+      }
+      const projectInfo = {
+        projectName,
+        selectedCategory,
+        description,
+      };
+      const data = await request(projectInfo);
+      dispatchAlert({
+        type: alertCase.success,
+      });
+      return data;
+    } catch (error) {
       dispatchAlert({
         type: alertCase.error,
-        payload: "You haven't choose category",
+        payload: error,
       });
-      return;
     }
-
-    const projectInfo = {
-      projectName,
-      selectedCategory,
-    };
-    dispatchAlert({
-      type: alertCase.success,
-    });
-    console.log(projectInfo);
   };
 
   const selectCategoryHandler = (id) => {
@@ -119,6 +134,7 @@ const CreateProject = () => {
       setSelectedCategory(null);
     }
   };
+
   const activeCategoryStyle = (id, theme) => {
     if (selectedCategory === id) {
       return {
@@ -126,6 +142,10 @@ const CreateProject = () => {
         color: theme.palette.common.white,
       };
     }
+  };
+
+  const watchEditor = (html) => {
+    setDescription(html);
   };
 
   return (
@@ -169,7 +189,7 @@ const CreateProject = () => {
             </Typography>
           </Grid2>
           <Grid2 xs={8}>
-            <RichTextEditor onChange={(state) => console.log(state)} />
+            <RichTextEditor onWatch={(state) => watchEditor(state)} />
           </Grid2>
         </Grid2>
         <Grid2 marginTop={2} container>

@@ -3,6 +3,7 @@ import ReactDOM from 'react-dom';
 import { Editor, EditorState, RichUtils, getDefaultKeyBinding } from 'draft-js';
 import './RichTextEditor.css';
 import { Box } from '@mui/material';
+import { convertToHTML } from 'draft-convert';
 
 export default class RichTextEditor extends React.Component {
   constructor(props) {
@@ -50,6 +51,11 @@ export default class RichTextEditor extends React.Component {
     this.onChange(
       RichUtils.toggleInlineStyle(this.state.editorState, inlineStyle)
     );
+  }
+
+  componentDidUpdate() {
+    const { editorState } = this.state;
+    this.props.onWatch(convertToHTML(editorState.getCurrentContent()));
   }
 
   render() {

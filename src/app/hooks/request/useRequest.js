@@ -47,10 +47,11 @@ export const useRequest = (fn, config = {}) => {
   const [state, dispatch] = useReducer(requestReducer, initialState);
   const { isManual = false, deps = [] } = config;
 
-  const request = async (...params) => {
+  const request = async (params) => {
     try {
+      console.log(params);
       dispatch({ type: requestCase.pending });
-      const data = await fn(...params);
+      const data = await fn(params);
       return data;
     } catch (error) {
       throw error;
@@ -70,7 +71,7 @@ export const useRequest = (fn, config = {}) => {
         );
     }
 
-    request();
+    // request();
   }, deps);
 
   const result = isManual ? request : state.data;
