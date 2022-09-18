@@ -2,7 +2,11 @@ import { Box } from '@mui/system';
 import React, { Suspense, useEffect } from 'react';
 import { Route, Routes } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
-import { loginHandler, signUpHandler } from './Modules/Auth/slice/authSlice';
+import {
+  loginHandler,
+  signUpHandler,
+  testThunkLogin,
+} from './Modules/Auth/slice/authSlice';
 import './App.css';
 import Board from './Modules/Board/Pages/Board';
 import Loader from './UI/Display/Loader/Loader';
@@ -34,6 +38,7 @@ function App() {
 
   useEffect(() => {
     dispatch(
+      // testThunkLogin({ email: fakeAuth.email, passWord: fakeAuth.passWord })
       loginHandler({ email: fakeAuth.email, passWord: fakeAuth.passWord })
     )
       .unwrap()

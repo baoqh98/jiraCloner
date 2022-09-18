@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 
 import { alpha, Container } from '@mui/system';
 import {
@@ -19,7 +19,7 @@ import Grid from '@mui/material/Unstable_Grid2';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPen, faTrash } from '@fortawesome/free-solid-svg-icons';
 
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 
 import { useRequest } from '../../../../app/hooks/request/useRequest';
 import projectAPIs from '../../../../app/apis/projectAPIs/projectAPIs';
@@ -29,6 +29,11 @@ import Members from '../../Components/Members';
 import { useState } from 'react';
 import DialogProject from '../../Components/DialogProject/DialogProject';
 import DialogProjectDelete from '../../Components/DialogProject/DialogProjectDelete';
+import {
+  deleteProjectThunk,
+  getAllProjectsThunk,
+} from '../../slice/projectSlice';
+import { projectSelector } from '../../../../app/store';
 
 const Heading = styled(Box)(({ theme }) => ({
   textAlign: 'left',
@@ -56,28 +61,28 @@ const categoryProject = {
 const Project = () => {
   const [isDialogOpen, setIsDialog] = useState(false);
   const [projectPayload, setProjectPayload] = useState(null);
-  const { getAllProjects, deleteProject } = projectAPIs;
-  const { data: projects, isLoading: getLoading } = useRequest(getAllProjects);
 
-  const { data: requestGetProject } = useRequest(getAllProjects, {
-    isManual: true,
-  });
   const {
-    data: requestDeleteProject,
-    isLoading: delLoading,
+    projects,
+    isLoading: getLoading,
     error,
-  } = useRequest(deleteProject, { isManual: true });
+  } = useSelector(projectSelector);
+
+  const dispatch = useDispatch();
 
   const deleteProjectHandler = async (id) => {
     try {
-      const data = await requestDeleteProject(id);
-      await requestGetProject().then((data) => console.log(data));
-      console.log(data);
-      return data;
+      dispatch(deleteProjectThunk(id))
+        .unwrap()
+        .then(dispatch(getAllProjectsThunk()));
     } catch (error) {
       console.log(error);
     }
   };
+
+  useEffect(() => {
+    dispatch(getAllProjectsThunk());
+  }, []);
 
   const rows = projects?.map((row) => {
     const { id, projectName, categoryName, members, creator, description } =

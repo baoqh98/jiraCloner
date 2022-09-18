@@ -1,5 +1,6 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import authAPIs from '../../../app/apis/auth/authAPIs';
+import thunk from '../../../app/apis/helper/thunk';
 
 const initialState = {
   data: JSON.parse(localStorage.getItem('jiraClonerUser')) || null,
@@ -8,18 +9,20 @@ const initialState = {
 };
 const { signIn, signUp } = authAPIs;
 
-export const loginHandler = createAsyncThunk(
-  'auth/signIn',
-  async (user, { rejectWithValue }) => {
-    try {
-      const data = await signIn(user);
-      localStorage.setItem('jiraClonerUser', JSON.stringify(data));
-      return data;
-    } catch (error) {
-      return rejectWithValue(error);
-    }
-  }
-);
+// export const loginHandler = createAsyncThunk(
+//   'auth/signIn',
+//   async (user, { rejectWithValue }) => {
+//     try {
+//       const data = await signIn(user);
+//       localStorage.setItem('jiraClonerUser', JSON.stringify(data));
+//       return data;
+//     } catch (error) {
+//       return rejectWithValue(error);
+//     }
+//   }
+// );
+
+export const loginHandler = thunk.request('auth/signIn', signIn);
 
 export const signUpHandler = createAsyncThunk(
   'auth/signUp',

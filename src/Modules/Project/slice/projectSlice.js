@@ -1,4 +1,6 @@
 import { createSlice } from '@reduxjs/toolkit';
+import thunk from '../../../app/apis/helper/thunk';
+import projectAPIs from '../../../app/apis/projectAPIs/projectAPIs';
 
 const initialState = {
   projects: [],
@@ -6,11 +8,41 @@ const initialState = {
   error: '',
 };
 
+const { getAllProjects, createProject, deleteProject } = projectAPIs;
+
+export const getAllProjectsThunk = thunk.request(
+  'project/getAllProjects',
+  getAllProjects
+);
+
+export const createProjectThunk = thunk.request(
+  'project/createProject',
+  createProject
+);
+
+export const deleteProjectThunk = thunk.request(
+  'project/createProject',
+  deleteProject
+);
+
 const projectSlice = createSlice({
   name: 'project',
   initialState,
   reducers: {},
-  extraReducers: (builder) => {},
+  extraReducers: (builder) => {
+    builder
+      .addCase(getAllProjectsThunk.pending, (state) => {
+        state.isLoading = true;
+      })
+      .addCase(getAllProjectsThunk.fulfilled, (state, { payload }) => {
+        state.isLoading = false;
+        state.projects = payload;
+      })
+      .addCase(getAllProjectsThunk.rejected, (state, { payload }) => {
+        state.isLoading = false;
+        state.error = payload;
+      });
+  },
 });
 
 export default projectSlice.reducer;

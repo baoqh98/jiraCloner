@@ -21,6 +21,8 @@ import projectCategory from '../../../../app/apis/projectCategory/projectCategor
 import { useForm } from 'react-hook-form';
 import { convertToHTML, convertFromHTML } from 'draft-convert';
 import projectAPIs from '../../../../app/apis/projectAPIs/projectAPIs';
+import { useDispatch } from 'react-redux';
+import { createProjectThunk } from '../../slice/projectSlice';
 
 //
 const { getProjectCategory } = projectCategory;
@@ -48,7 +50,7 @@ const alertCase = {
 const initialAlertState = {
   isLoading: false,
   errorMessage: '',
-  successMessage: null,
+  successMessage: '',
 };
 
 const alertReducer = (state, { type, payload }) => {
@@ -77,16 +79,14 @@ const alertReducer = (state, { type, payload }) => {
 
 const CreateProject = () => {
   const { data: projectCategory } = useRequest(getProjectCategory);
-  const { data: request } = useRequest(
-    (projectInfo) => createProject(projectInfo),
-    { isManual: true }
-  );
   const [selectedCategory, setSelectedCategory] = useState(null);
   const [description, setDescription] = useState(null);
   const [alertState, dispatchAlert] = useReducer(
     alertReducer,
     initialAlertState
   );
+
+  const dispatch = useDispatch();
 
   const {
     register,
@@ -114,12 +114,14 @@ const CreateProject = () => {
         selectedCategory,
         description,
       };
-      const data = await request(projectInfo);
+      const data = await dispatch(createProjectThunk(projectInfo)).unwrap();
       dispatchAlert({
         type: alertCase.success,
       });
+      console.log(data);
       return data;
     } catch (error) {
+      console.log(error);
       dispatchAlert({
         type: alertCase.error,
         payload: error,
@@ -264,8 +266,8 @@ const CreateProject = () => {
           <Box marginTop={4}>
             {alertState.errorMessage ? (
               <Alert severity='error'>{alertState.errorMessage}</Alert>
-            ) : alertState.errorMessage ? (
-              <Alert severity='error'>{alertState.successMessage}</Alert>
+            ) : alertState.successMessage ? (
+              <Alert severity='success'>{alertState.successMessage}</Alert>
             ) : null}
           </Box>
         </Grid2>
