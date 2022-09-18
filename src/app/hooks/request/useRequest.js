@@ -47,7 +47,7 @@ export const useRequest = (fn, config = {}) => {
   const [state, dispatch] = useReducer(requestReducer, initialState);
   const { isManual = false, deps = [] } = config;
 
-  const request = async (params) => {
+  const request = async (params = undefined) => {
     try {
       dispatch({ type: requestCase.pending });
       const data = await fn(params);
@@ -69,8 +69,6 @@ export const useRequest = (fn, config = {}) => {
           dispatch({ type: requestCase.rejected, payload: error })
         );
     }
-
-    // request();
   }, deps);
 
   const result = isManual ? request : state.data;

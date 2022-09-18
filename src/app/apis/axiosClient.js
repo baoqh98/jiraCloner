@@ -19,7 +19,8 @@ axiosClient.interceptors.response.use(
 );
 
 axiosClient.interceptors.request.use((config) => {
-  const accessToken = store.getState().auth.data?.accessToken || '';
-  config.headers.Authorization = accessToken ? `Bearer ${accessToken}` : '';
+  const accessToken = store.getState().auth.data?.accessToken;
+  console.log(accessToken);
+  config.headers.Authorization = `Bearer ${accessToken}`;
   return config;
 });

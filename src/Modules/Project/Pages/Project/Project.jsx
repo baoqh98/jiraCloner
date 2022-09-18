@@ -19,6 +19,8 @@ import Grid from '@mui/material/Unstable_Grid2';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPen, faTrash } from '@fortawesome/free-solid-svg-icons';
 
+import { useDispatch } from 'react-redux';
+
 import { useRequest } from '../../../../app/hooks/request/useRequest';
 import projectAPIs from '../../../../app/apis/projectAPIs/projectAPIs';
 
@@ -56,15 +58,20 @@ const Project = () => {
   const [projectPayload, setProjectPayload] = useState(null);
   const { getAllProjects, deleteProject } = projectAPIs;
   const { data: projects, isLoading: getLoading } = useRequest(getAllProjects);
+
+  const { data: requestGetProject } = useRequest(getAllProjects, {
+    isManual: true,
+  });
   const {
-    data: request,
+    data: requestDeleteProject,
     isLoading: delLoading,
     error,
   } = useRequest(deleteProject, { isManual: true });
 
   const deleteProjectHandler = async (id) => {
     try {
-      const data = await request(id);
+      const data = await requestDeleteProject(id);
+      await requestGetProject().then((data) => console.log(data));
       console.log(data);
       return data;
     } catch (error) {
@@ -118,7 +125,9 @@ const Project = () => {
                   ? theme.palette.primary.light
                   : categoryName === categoryProject['web']
                   ? colors.green[500]
-                  : colors.amber[500],
+                  : categoryName === categoryProject['mobile']
+                  ? colors.amber[500]
+                  : '',
               backgroundColor:
                 categoryName === categoryProject['app']
                   ? alpha(theme.palette.primary.light, 0.2)

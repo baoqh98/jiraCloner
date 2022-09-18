@@ -2,7 +2,7 @@ import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import authAPIs from '../../../app/apis/auth/authAPIs';
 
 const initialState = {
-  data: null,
+  data: JSON.parse(localStorage.getItem('jiraClonerUser')) || null,
   isLoading: false,
   error: '',
 };

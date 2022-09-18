@@ -17,32 +17,36 @@ const CreateProject = React.lazy(() =>
   import('./Modules/Project/Pages/CreateProject')
 );
 
-const fakeAuth = {
-  email: 'fakeauth@mail.com',
-  passWord: 'fakeauth',
-  name: 'fakeauth',
-  phoneNumber: '010101',
-};
-
 function App() {
   // const { data, isLoading, error } = useSelector(authSelector);
   const dispatch = useDispatch();
+
+  const fakeAuth = {
+    email: 'fakeauth@mail.com',
+    passWord: 'fakeauth',
+    name: 'fakeauth',
+    phoneNumber: '010101',
+  };
+
+  dispatch(
+    loginHandler({ email: fakeAuth.email, passWord: fakeAuth.passWord })
+  );
 
   useEffect(() => {
     dispatch(
       loginHandler({ email: fakeAuth.email, passWord: fakeAuth.passWord })
     )
       .unwrap()
-      .then((data) => console.log(data))
-      .catch((error) => {
-        if (!error) return;
-        if (error) {
-          dispatch(signUpHandler(fakeAuth))
-            .unwrap()
-            .then((data) => console.log(data))
-            .catch((err) => console.log(err));
-        }
-      });
+      .then((data) => console.log(data));
+    // .catch((error) => {
+    //   if (!error) return;
+    //   if (error) {
+    //     dispatch(signUpHandler(fakeAuth))
+    //       .unwrap()
+    //       .then((data) => console.log(data))
+    //       .catch((err) => console.log(err));
+    //   }
+    // });
   }, []);
 
   return (

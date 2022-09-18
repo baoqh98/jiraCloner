@@ -6,7 +6,7 @@ const projectAPIs = {
   },
 
   createProject: (projectInfo) => {
-    return axiosClient.post('Project/createProject', projectInfo);
+    return axiosClient.post('Project/createProjectAuthorize', projectInfo);
   },
 
   deleteProject: (id) => {
