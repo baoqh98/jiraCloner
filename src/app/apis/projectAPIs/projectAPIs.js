@@ -10,7 +10,11 @@ const projectAPIs = {
   },
 
   deleteProject: (id) => {
-    return axiosClient.delete('Project/deleteProject', id);
+    const params = new URLSearchParams();
+    params.append('projectId', id);
+    return axiosClient.delete('Project/deleteProject', {
+      params,
+    });
   },
 };
 

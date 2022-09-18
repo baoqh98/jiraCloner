@@ -60,11 +60,12 @@ const Project = () => {
     data: request,
     isLoading: delLoading,
     error,
-  } = useRequest((id) => deleteProject(id), { isManual: true });
+  } = useRequest(deleteProject, { isManual: true });
 
   const deleteProjectHandler = async (id) => {
     try {
       const data = await request(id);
+      console.log(data);
       return data;
     } catch (error) {
       console.log(error);
