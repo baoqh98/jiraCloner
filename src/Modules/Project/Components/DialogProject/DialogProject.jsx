@@ -6,7 +6,6 @@ import {
   DialogTitle,
 } from '@mui/material';
 import React from 'react';
-import DialogProjectDelete from './DialogProjectDelete';
 
 const DialogProject = ({
   label,
@@ -15,19 +14,24 @@ const DialogProject = ({
   actionError,
   onClose,
   isDialogOpen,
+  onControl,
   payload,
 }) => {
   return (
     <Dialog onClose={onClose} open={isDialogOpen}>
-      <DialogTitle>{label}</DialogTitle>
-      <DialogContent>
-        {content === 'delete' ? (
-          <DialogProjectDelete payload={payload} />
-        ) : null}
-      </DialogContent>
+      <DialogTitle fontWeight={700}>{label}</DialogTitle>
+      <DialogContent>{content}</DialogContent>
       <DialogActions>
-        {actionPrimary && <Button color='primary'>{actionPrimary}</Button>}
-        {actionError && <Button color='error'>{actionError}</Button>}
+        {actionError && (
+          <Button onClick={onClose} color='error'>
+            {actionError}
+          </Button>
+        )}
+        {actionPrimary && (
+          <Button onClick={onControl} variant='contained' color='primary'>
+            {actionPrimary}
+          </Button>
+        )}
       </DialogActions>
     </Dialog>
   );

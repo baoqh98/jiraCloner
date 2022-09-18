@@ -26,6 +26,7 @@ import Loader from '../../../../UI/Display/Loader';
 import Members from '../../Components/Members';
 import { useState } from 'react';
 import DialogProject from '../../Components/DialogProject/DialogProject';
+import DialogProjectDelete from '../../Components/DialogProject/DialogProjectDelete';
 
 const Heading = styled(Box)(({ theme }) => ({
   textAlign: 'left',
@@ -53,8 +54,22 @@ const categoryProject = {
 const Project = () => {
   const [isDialogOpen, setIsDialog] = useState(false);
   const [projectPayload, setProjectPayload] = useState(null);
-  const { getAllProjects } = projectAPIs;
-  const { data: projects, isLoading } = useRequest(getAllProjects);
+  const { getAllProjects, deleteProject } = projectAPIs;
+  const { data: projects, isLoading: getLoading } = useRequest(getAllProjects);
+  const {
+    data: request,
+    isLoading: delLoading,
+    error,
+  } = useRequest((id) => deleteProject(id), { isManual: true });
+
+  const deleteProjectHandler = async (id) => {
+    try {
+      const data = await request(id);
+      return data;
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   const rows = projects?.map((row) => {
     const { id, projectName, categoryName, members, creator, description } =
@@ -139,7 +154,10 @@ const Project = () => {
             <Button color='success'>
               <FontAwesomeIcon icon={faPen} />
             </Button>
-            <Button onClick={() => dialogSettingHandler(id)} color='error'>
+            <Button
+              onClick={() => dialogSettingHandler(id, projectName)}
+              color='error'
+            >
               <FontAwesomeIcon icon={faTrash} />
             </Button>
           </Box>
@@ -151,10 +169,14 @@ const Project = () => {
   return (
     <Container maxWidth='xl'>
       <DialogProject
+        onClose={() => setIsDialog(false)}
         isDialogOpen={isDialogOpen}
         label='Are you sure you want to delete this project?'
-        content='delete'
+        content={<DialogProjectDelete payload={projectPayload} />}
+        actionError='Cancel'
+        actionPrimary='Delete'
         payload={projectPayload}
+        onControl={() => deleteProjectHandler(projectPayload.id)}
       />
       <Grid marginTop={2} container>
         <Grid xs={4}>
@@ -165,8 +187,8 @@ const Project = () => {
           </Heading>
         </Grid>
       </Grid>
-      {isLoading && <Loader />}
-      {!isLoading && (
+      {getLoading && <Loader />}
+      {!getLoading && (
         <TableContainer
           sx={(theme) => ({
             position: 'relative',

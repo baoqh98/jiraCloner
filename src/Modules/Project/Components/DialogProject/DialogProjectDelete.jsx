@@ -1,4 +1,4 @@
-import { Chip } from '@mui/material';
+import { Chip, Typography } from '@mui/material';
 import { Box } from '@mui/system';
 import React from 'react';
 
@@ -9,6 +9,7 @@ const DialogProjectDelete = ({ payload }) => {
         display: 'flex',
         justifyContent: 'center',
         alignItems: 'center',
+        gap: '16px',
       }}
     >
       <Chip
@@ -19,6 +20,9 @@ const DialogProjectDelete = ({ payload }) => {
         }}
         label={`ID: ${payload.id}`}
       />
+      <Typography variant='subtitle1' fontWeight={700}>
+        {payload.projectName}
+      </Typography>
     </Box>
   );
 };

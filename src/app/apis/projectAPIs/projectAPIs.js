@@ -8,6 +8,10 @@ const projectAPIs = {
   createProject: (projectInfo) => {
     return axiosClient.post('Project/createProject', projectInfo);
   },
+
+  deleteProject: (id) => {
+    return axiosClient.delete('Project/deleteProject', id);
+  },
 };
 
 export default projectAPIs;
