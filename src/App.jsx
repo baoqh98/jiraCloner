@@ -2,10 +2,11 @@ import { Box } from '@mui/system';
 import React, { Suspense, useEffect } from 'react';
 import { Route, Routes } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
-import { loginHandler } from './Modules/Auth/slice/authSlice';
+import { loginHandler, signUpHandler } from './Modules/Auth/slice/authSlice';
 import './App.css';
 import Board from './Modules/Board/Pages/Board';
 import Loader from './UI/Display/Loader/Loader';
+import { authSelector } from './app/store';
 // import CreateProject from './Modules/Project/Pages/CreateProject';
 // import Project from './Modules/Project/Pages/Project';
 // import MainLayout from './UI/Layout/MainLayout';
@@ -24,12 +25,24 @@ const fakeAuth = {
 };
 
 function App() {
+  // const { data, isLoading, error } = useSelector(authSelector);
   const dispatch = useDispatch();
 
   useEffect(() => {
     dispatch(
       loginHandler({ email: fakeAuth.email, passWord: fakeAuth.passWord })
-    );
+    )
+      .unwrap()
+      .then((data) => console.log(data))
+      .catch((error) => {
+        if (!error) return;
+        if (error) {
+          dispatch(signUpHandler(fakeAuth))
+            .unwrap()
+            .then((data) => console.log(data))
+            .catch((err) => console.log(err));
+        }
+      });
   }, []);
 
   return (

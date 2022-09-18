@@ -1,5 +1,6 @@
-import { Container } from '@mui/system';
-import { alpha } from '@mui/system';
+import React from 'react';
+
+import { alpha, Container } from '@mui/system';
 import {
   Typography,
   Box,
@@ -15,14 +16,16 @@ import {
   Button,
 } from '@mui/material';
 import Grid from '@mui/material/Unstable_Grid2';
-import React from 'react';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faPen, faTrash } from '@fortawesome/free-solid-svg-icons';
 
 import { useRequest } from '../../../../app/hooks/request/useRequest';
 import projectAPIs from '../../../../app/apis/projectAPIs/projectAPIs';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faPen, faTrash } from '@fortawesome/free-solid-svg-icons';
+
 import Loader from '../../../../UI/Display/Loader';
 import Members from '../../Components/Members';
+import { useState } from 'react';
+import DialogProject from '../../Components/DialogProject/DialogProject';
 
 const Heading = styled(Box)(({ theme }) => ({
   textAlign: 'left',
@@ -48,90 +51,111 @@ const categoryProject = {
 };
 
 const Project = () => {
+  const [isDialogOpen, setIsDialog] = useState(false);
+  const [projectPayload, setProjectPayload] = useState(null);
   const { getAllProjects } = projectAPIs;
   const { data: projects, isLoading } = useRequest(getAllProjects);
 
-  const rows = projects?.map((row) => (
-    <TableRow
-      key={row.id}
-      sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
-    >
-      <TableCellBody>
-        <Chip
-          color='info'
-          size='small'
-          sx={(theme) => ({
-            borderRadius: '4px',
-            fontSize: '12px',
-            color: theme.palette.primary.light,
-          })}
-          variant='outlined'
-          label={`ID: ${row.id}`}
-        />
-      </TableCellBody>
-      <TableCellBody
-        sx={{
-          maxWidth: 160,
-        }}
+  const rows = projects?.map((row) => {
+    const { id, projectName, categoryName, members, creator, description } =
+      row;
+    const formattedDescription = description.replace(/<[^>]*>/g, '');
+
+    const dialogSettingHandler = (id, projectName) => {
+      setIsDialog(true);
+      setProjectPayload({ id, projectName });
+    };
+
+    return (
+      <TableRow
+        key={id}
+        sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
       >
-        <Typography variant='subtitle1' fontWeight={700}>
-          {row.projectName}
-        </Typography>
-      </TableCellBody>
-      <TableCellBody component='th' scope='row'>
-        <Chip
-          label={row.categoryName}
-          sx={(theme) => ({
-            color:
-              row.categoryName === categoryProject['app']
-                ? theme.palette.primary.light
-                : row.categoryName === categoryProject['web']
-                ? colors.green[500]
-                : colors.amber[500],
-            backgroundColor:
-              row.categoryName === categoryProject['app']
-                ? alpha(theme.palette.primary.light, 0.2)
-                : row.categoryName === categoryProject['web']
-                ? colors.green[50]
-                : colors.amber[50],
-          })}
-        />
-      </TableCellBody>
-      <TableCellBody align='left'>
-        <Members members={row.members} />
-      </TableCellBody>
-      <TableCellBody component='th' scope='row'>
-        {row.creator.name}
-      </TableCellBody>
-      <TableCellBody
-        sx={(theme) => ({
-          maxWidth: 200,
-          textOverflow: 'ellipsis',
-          overflow: 'hidden',
-          whiteSpace: 'nowrap',
-        })}
-        align='left'
-      >{`${row.description}`}</TableCellBody>
-      <TableCellBody align='left'>
-        <Box
+        <TableCellBody>
+          <Chip
+            color='info'
+            size='small'
+            sx={(theme) => ({
+              borderRadius: '4px',
+              fontSize: '12px',
+              color: theme.palette.primary.light,
+            })}
+            variant='outlined'
+            label={`ID: ${id}`}
+          />
+        </TableCellBody>
+        <TableCellBody
           sx={{
-            display: 'flex',
-            alignItems: 'center',
+            maxWidth: 160,
           }}
         >
-          <Button color='success'>
-            <FontAwesomeIcon icon={faPen} />
-          </Button>
-          <Button color='error'>
-            <FontAwesomeIcon icon={faTrash} />
-          </Button>
-        </Box>
-      </TableCellBody>
-    </TableRow>
-  ));
+          <Typography variant='subtitle1' fontWeight={700}>
+            {projectName}
+          </Typography>
+        </TableCellBody>
+        <TableCellBody component='th' scope='row'>
+          <Chip
+            label={categoryName}
+            sx={(theme) => ({
+              color:
+                categoryName === categoryProject['app']
+                  ? theme.palette.primary.light
+                  : categoryName === categoryProject['web']
+                  ? colors.green[500]
+                  : colors.amber[500],
+              backgroundColor:
+                categoryName === categoryProject['app']
+                  ? alpha(theme.palette.primary.light, 0.2)
+                  : categoryName === categoryProject['web']
+                  ? colors.green[50]
+                  : colors.amber[50],
+            })}
+          />
+        </TableCellBody>
+        <TableCellBody align='left'>
+          <Members members={members} />
+        </TableCellBody>
+        <TableCellBody component='th' scope='row'>
+          {creator.name}
+        </TableCellBody>
+        <TableCellBody
+          sx={(theme) => ({
+            maxWidth: 200,
+            textOverflow: 'ellipsis',
+            overflow: 'hidden',
+            whiteSpace: 'nowrap',
+          })}
+          align='left'
+        >
+          {formattedDescription}
+        </TableCellBody>
+        <TableCellBody align='left'>
+          <Box
+            sx={{
+              display: 'flex',
+              alignItems: 'center',
+            }}
+          >
+            <Button color='success'>
+              <FontAwesomeIcon icon={faPen} />
+            </Button>
+            <Button onClick={() => dialogSettingHandler(id)} color='error'>
+              <FontAwesomeIcon icon={faTrash} />
+            </Button>
+          </Box>
+        </TableCellBody>
+      </TableRow>
+    );
+  });
 
   return (
     <Container maxWidth='xl'>
+      <DialogProject
+        isDialogOpen={isDialogOpen}
+        label='Are you sure you want to delete this project?'
+        content='delete'
+        payload={projectPayload}
+      />
       <Grid marginTop={2} container>
         <Grid xs={4}>
           <Heading>

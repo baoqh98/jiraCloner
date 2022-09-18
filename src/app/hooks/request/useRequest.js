@@ -49,7 +49,6 @@ export const useRequest = (fn, config = {}) => {
 
   const request = async (params) => {
     try {
-      console.log(params);
       dispatch({ type: requestCase.pending });
       const data = await fn(params);
       return data;
