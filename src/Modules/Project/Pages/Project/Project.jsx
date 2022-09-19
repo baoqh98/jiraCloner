@@ -34,6 +34,10 @@ import {
   getAllProjectsThunk,
 } from '../../slice/projectSlice';
 import { projectSelector } from '../../../../app/store';
+import useAlert, {
+  alertCase,
+  initialAlertState,
+} from '../../../../app/hooks/alert/useAlert';
 
 const Heading = styled(Box)(({ theme }) => ({
   textAlign: 'left',
@@ -61,11 +65,12 @@ const categoryProject = {
 const Project = () => {
   const [isDialogOpen, setIsDialog] = useState(false);
   const [projectPayload, setProjectPayload] = useState(null);
+  const { alertState, dispatchAlert } = useAlert();
 
   const {
     projects,
     isLoading: getLoading,
-    error,
+    error: projectError,
   } = useSelector(projectSelector);
 
   const dispatch = useDispatch();
@@ -74,10 +79,15 @@ const Project = () => {
     try {
       dispatch(deleteProjectThunk(id))
         .unwrap()
-        .then(dispatch(getAllProjectsThunk()));
-    } catch (error) {
-      console.log(error);
-    }
+        .then(() => dispatch(getAllProjectsThunk()))
+        .catch((error) => {
+          throw error;
+        });
+      dispatchAlert({
+        type: alertCase.success,
+        payload: 'Delete Successfully',
+      });
+    } catch (error) {}
   };
 
   useEffect(() => {
@@ -170,7 +180,10 @@ const Project = () => {
               <FontAwesomeIcon icon={faPen} />
             </Button>
             <Button
-              onClick={() => dialogSettingHandler(id, projectName)}
+              onClick={() => {
+                dispatchAlert({ type: alertCase.reset });
+                dialogSettingHandler(id, projectName);
+              }}
               color='error'
             >
               <FontAwesomeIcon icon={faTrash} />
@@ -186,13 +199,28 @@ const Project = () => {
       <DialogProject
         onClose={() => setIsDialog(false)}
         isDialogOpen={isDialogOpen}
-        label='Are you sure you want to delete this project?'
-        content={<DialogProjectDelete payload={projectPayload} />}
+        label={'Are you sure you want to delete this project?'}
+        content={
+          alertState.successMessage === '' ? (
+            <DialogProjectDelete payload={projectPayload} />
+          ) : (
+            <Typography
+              align='center'
+              variant='h6'
+              component='h2'
+              color='green'
+              fontWeight={700}
+            >
+              {alertState.successMessage}
+            </Typography>
+          )
+        }
         actionError='Cancel'
         actionPrimary='Delete'
         payload={projectPayload}
         onControl={() => deleteProjectHandler(projectPayload.id)}
       />
+
       <Grid marginTop={2} container>
         <Grid xs={4}>
           <Heading>

@@ -1,6 +1,14 @@
 import React, { useState } from 'react';
-import { Avatar, AvatarGroup, Box, ClickAwayListener } from '@mui/material';
+import {
+  Avatar,
+  AvatarGroup,
+  Box,
+  ClickAwayListener,
+  IconButton,
+} from '@mui/material';
 import MembersAction from '../MembersAction/MembersAction';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faPlus } from '@fortawesome/free-solid-svg-icons';
 
 const Members = ({ members }) => {
   const [isShowAction, setIsShowAction] = useState(false);
@@ -19,6 +27,9 @@ const Members = ({ members }) => {
         {members.map((item) => (
           <Avatar key={item.userId} alt={item.name} src={item.avatar} />
         ))}
+        <Avatar>
+          <FontAwesomeIcon icon={faPlus} />
+        </Avatar>
       </AvatarGroup>
       <MembersAction
         onShowAction={setIsShowActionHandler}

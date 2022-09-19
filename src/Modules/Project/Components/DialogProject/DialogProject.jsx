@@ -16,10 +16,11 @@ const DialogProject = ({
   isDialogOpen,
   onControl,
   payload,
+  status,
 }) => {
   return (
     <Dialog onClose={onClose} open={isDialogOpen}>
-      <DialogTitle fontWeight={700}>{label}</DialogTitle>
+      <DialogTitle fontWeight={500}>{label}</DialogTitle>
       <DialogContent>{content}</DialogContent>
       <DialogActions>
         {actionError && (

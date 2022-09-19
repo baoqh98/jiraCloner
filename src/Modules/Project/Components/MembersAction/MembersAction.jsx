@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import ReactDOM from 'react-dom';
 import {
+  faPlus,
   faSquareMinus,
   faXmarkCircle,
 } from '@fortawesome/free-solid-svg-icons';
@@ -17,10 +18,16 @@ import {
   TableBody,
   Fade,
   IconButton,
-  ClickAwayListener,
+  Typography,
+  Select,
+  TextField,
+  Grow,
+  Button,
+  Autocomplete,
 } from '@mui/material';
 import TableCell, { tableCellClasses } from '@mui/material/TableCell';
 import Draggable from 'react-draggable';
+import { Box } from '@mui/system';
 
 const MembersActionWrapper = styled(Paper)(({ theme }) => ({
   position: 'absolute',
@@ -40,7 +47,6 @@ const StyledTableCell = styled(TableCell)(({ theme }) => ({
     border: 'none',
     fontWeight: 700,
     fontSize: '14px',
-    width: '25%',
   },
   [`&.${tableCellClasses.body}`]: {
     fontSize: 14,
@@ -59,6 +65,8 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
 }));
 
 const MembersAction = ({ isShowAction, onShowAction, members }) => {
+  const [isExpand, setIsExpand] = useState(false);
+
   return (
     <Draggable handle='#draggable-head'>
       <Fade in={isShowAction}>
@@ -66,7 +74,7 @@ const MembersAction = ({ isShowAction, onShowAction, members }) => {
           <TableContainer sx={{ maxHeight: 320, overflow: 'overlay' }}>
             <Table
               stickyHeader
-              sx={{ minWidth: 500 }}
+              sx={{ minWidth: 560 }}
               aria-label='customized table'
             >
               <TableHead
@@ -91,7 +99,6 @@ const MembersAction = ({ isShowAction, onShowAction, members }) => {
                 </TableRow>
               </TableHead>
               <TableBody>
-                <StyledTableRow width={'100%'}></StyledTableRow>
                 {members.map((row) => (
                   <StyledTableRow key={row.userId}>
                     <StyledTableCell component='th' scope='row'>
@@ -108,6 +115,59 @@ const MembersAction = ({ isShowAction, onShowAction, members }) => {
                     </StyledTableCell>
                   </StyledTableRow>
                 ))}
+                <StyledTableRow
+                  sx={(theme) => ({
+                    transition: 'all ease 0.2s',
+                  })}
+                  width={'100%'}
+                >
+                  <StyledTableCell component='th' scope='row'>
+                    <Typography
+                      sx={{
+                        minWidth: '80px',
+                      }}
+                      variant='subtitle1'
+                      fontWeight={700}
+                    >
+                      Add more
+                    </Typography>
+                  </StyledTableCell>
+                  <StyledTableCell align='left'>
+                    <IconButton
+                      onClick={() => setIsExpand((prev) => !prev)}
+                      color='success'
+                    >
+                      <FontAwesomeIcon
+                        icon={!isExpand ? faPlus : faXmarkCircle}
+                      />
+                    </IconButton>
+                  </StyledTableCell>
+                  <StyledTableCell
+                    sx={{
+                      minWidth: '120px',
+                    }}
+                  >
+                    <Grow in={isExpand}>
+                      <Autocomplete
+                        id='combo-box-demo'
+                        size='small'
+                        options={[
+                          { label: 'The Shawshank Redemption', year: 1994 },
+                          { label: 'The Godfather', year: 1972 },
+                        ]}
+                        sx={{ width: 300 }}
+                        renderInput={(params) => <TextField {...params} />}
+                      />
+                    </Grow>
+                  </StyledTableCell>
+                  <StyledTableCell align='right'>
+                    <Grow in={isExpand}>
+                      <Button color='primary' variant='contained'>
+                        Add
+                      </Button>
+                    </Grow>
+                  </StyledTableCell>
+                </StyledTableRow>
               </TableBody>
             </Table>
           </TableContainer>

@@ -19,14 +19,12 @@ import RichTextEditor from './RichTextEditor';
 import { useRequest } from '../../../../app/hooks/request/useRequest';
 import projectCategory from '../../../../app/apis/projectCategory/projectCategory';
 import { useForm } from 'react-hook-form';
-import { convertToHTML, convertFromHTML } from 'draft-convert';
-import projectAPIs from '../../../../app/apis/projectAPIs/projectAPIs';
+
 import { useDispatch } from 'react-redux';
 import { createProjectThunk } from '../../slice/projectSlice';
 
 //
 const { getProjectCategory } = projectCategory;
-const { createProject } = projectAPIs;
 
 const categoryProjectMap = {
   app: 'Dự án phần mềm',
@@ -64,12 +62,14 @@ const alertReducer = (state, { type, payload }) => {
       return {
         ...state,
         isLoading: false,
+        successMessage: '',
         errorMessage: payload,
       };
     case alertCase.success:
       return {
         ...state,
         isLoading: false,
+        errorMessage: '',
         successMessage: 'Create Project Successfully',
       };
     default:
@@ -92,8 +92,8 @@ const CreateProject = () => {
     register,
     handleSubmit,
     formState: { errors },
-    clearErrors,
   } = useForm({
+    mode: 'onBlur',
     defaultValues: {
       projectName: '',
     },
@@ -109,16 +109,19 @@ const CreateProject = () => {
         });
         return;
       }
+      const formattedName = projectName.replace("'", "\\'");
       const projectInfo = {
         projectName,
         selectedCategory,
         description,
       };
+
+      console.log(projectInfo);
       const data = await dispatch(createProjectThunk(projectInfo)).unwrap();
       dispatchAlert({
         type: alertCase.success,
       });
-      console.log(data);
+
       return data;
     } catch (error) {
       console.log(error);
@@ -170,12 +173,20 @@ const CreateProject = () => {
             <TextField
               size='small'
               placeholder="Input your project's name"
-              {...register('projectName', { required: 'This is required.' })}
+              {...register('projectName', {
+                required: {
+                  value: true,
+                  message: 'This is required',
+                },
+                pattern: {
+                  value: /^[^'"!@#$%^&*()?,:;~`+=-]*$/,
+                  message: 'Not contain special character',
+                },
+              })}
               fullWidth
               color={errors.projectName ? 'error' : ''}
               error={!!errors.projectName}
               helperText={errors.projectName?.message}
-              onChange={() => clearErrors('projectName')}
             />
           </Grid2>
         </Grid2>
