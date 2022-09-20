@@ -24,10 +24,15 @@ import {
   Grow,
   Button,
   Autocomplete,
+  CircularProgress,
+  MenuItem,
 } from '@mui/material';
 import TableCell, { tableCellClasses } from '@mui/material/TableCell';
 import Draggable from 'react-draggable';
-import { Box } from '@mui/system';
+import { useRequest } from '../../../../app/hooks/request/useRequest';
+import usersAPIs from '../../../../app/apis/userAPIs/usersAPIs';
+import { useDispatch } from 'react-redux';
+import { assignUserProjectThunk } from '../../slice/projectSlice';
 
 const MembersActionWrapper = styled(Paper)(({ theme }) => ({
   position: 'absolute',
@@ -64,117 +69,171 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
   },
 }));
 
-const MembersAction = ({ isShowAction, onShowAction, members }) => {
-  const [isExpand, setIsExpand] = useState(false);
+const { getUser, getUserByProjectId, deleteUser } = usersAPIs;
+
+const CustomizedAutocomplete = (props) => {
+  const { data: users } = useRequest(getUser);
+
+  const userOptions = users?.map((item) => ({
+    label: item.name,
+    userId: item.userId,
+  }));
 
   return (
-    <Draggable handle='#draggable-head'>
-      <Fade in={isShowAction}>
-        <MembersActionWrapper>
-          <TableContainer sx={{ maxHeight: 320, overflow: 'overlay' }}>
-            <Table
-              stickyHeader
-              sx={{ minWidth: 560 }}
-              aria-label='customized table'
-            >
-              <TableHead
-                sx={{
-                  cursor: 'move',
-                }}
-                id='draggable-head'
-              >
-                <TableRow>
-                  <StyledTableCell>ID</StyledTableCell>
-                  <StyledTableCell align='left'>Avatar</StyledTableCell>
-                  <StyledTableCell>Name</StyledTableCell>
-                  <StyledTableCell align='right'>
-                    <IconButton
-                      size='small'
-                      onClick={onShowAction}
-                      color='secondary'
-                    >
-                      <FontAwesomeIcon icon={faXmarkCircle} />
-                    </IconButton>
-                  </StyledTableCell>
-                </TableRow>
-              </TableHead>
-              <TableBody>
-                {members.map((row) => (
-                  <StyledTableRow key={row.userId}>
-                    <StyledTableCell component='th' scope='row'>
-                      {row.userId}
-                    </StyledTableCell>
-                    <StyledTableCell align='left'>
-                      <Avatar alt={row.name} src={row.avatar} />
-                    </StyledTableCell>
-                    <StyledTableCell>{row.name}</StyledTableCell>
-                    <StyledTableCell align='right'>
-                      <IconButton color='error' size='small'>
-                        <FontAwesomeIcon icon={faSquareMinus} />
-                      </IconButton>
-                    </StyledTableCell>
-                  </StyledTableRow>
-                ))}
-                <StyledTableRow
-                  sx={(theme) => ({
-                    transition: 'all ease 0.2s',
-                  })}
-                  width={'100%'}
-                >
-                  <StyledTableCell component='th' scope='row'>
-                    <Typography
-                      sx={{
-                        minWidth: '80px',
-                      }}
-                      variant='subtitle1'
-                      fontWeight={700}
-                    >
-                      Add more
-                    </Typography>
-                  </StyledTableCell>
-                  <StyledTableCell align='left'>
-                    <IconButton
-                      onClick={() => setIsExpand((prev) => !prev)}
-                      color='success'
-                    >
-                      <FontAwesomeIcon
-                        icon={!isExpand ? faPlus : faXmarkCircle}
-                      />
-                    </IconButton>
-                  </StyledTableCell>
-                  <StyledTableCell
-                    sx={{
-                      minWidth: '120px',
-                    }}
-                  >
-                    <Grow in={isExpand}>
-                      <Autocomplete
-                        id='combo-box-demo'
-                        size='small'
-                        options={[
-                          { label: 'The Shawshank Redemption', year: 1994 },
-                          { label: 'The Godfather', year: 1972 },
-                        ]}
-                        sx={{ width: 300 }}
-                        renderInput={(params) => <TextField {...params} />}
-                      />
-                    </Grow>
-                  </StyledTableCell>
-                  <StyledTableCell align='right'>
-                    <Grow in={isExpand}>
-                      <Button color='primary' variant='contained'>
-                        Add
-                      </Button>
-                    </Grow>
-                  </StyledTableCell>
-                </StyledTableRow>
-              </TableBody>
-            </Table>
-          </TableContainer>
-        </MembersActionWrapper>
-      </Fade>
-    </Draggable>
+    <>
+      {users && (
+        <Grow in={props.in}>
+          <Autocomplete
+            size='small'
+            options={userOptions}
+            sx={{ width: 300 }}
+            isOptionEqualToValue={(option, value) =>
+              option.userId === value.userId
+            }
+            onChange={(e, option) => props.onSetId(option?.userId)}
+            renderOption={(props, option) => (
+              <MenuItem {...props} key={option.userId}>
+                {option.label}
+              </MenuItem>
+            )}
+            renderInput={(params) => (
+              <TextField {...params} placeholder='Members' />
+            )}
+          />
+        </Grow>
+      )}
+    </>
   );
 };
+
+const MembersAction = React.memo(
+  ({ isShowAction, onShowAction, projectId }) => {
+    const { data: members } = useRequest(() => getUserByProjectId(projectId));
+    const [isExpand, setIsExpand] = useState(false);
+    const [userId, setUserId] = useState(null);
+
+    const dispatch = useDispatch();
+
+    console.log(members, projectId);
+
+    const assignUserHandler = async () => {
+      console.log(userId);
+      console.log(projectId);
+      try {
+        // const data = await dispatch(
+        //   assignUserProjectThunk({ userId, projectId })
+        // ).unwrap();
+        // .then(() => dispatch());
+        // console.log(data);
+        // return data;
+      } catch (error) {}
+    };
+
+    return (
+      <Draggable handle='#draggable-head'>
+        <Fade in={isShowAction}>
+          <MembersActionWrapper>
+            <TableContainer sx={{ maxHeight: 480, overflow: 'overlay' }}>
+              <Table
+                stickyHeader
+                sx={{ minWidth: 560 }}
+                aria-label='customized table'
+              >
+                <TableHead
+                  sx={{
+                    cursor: 'move',
+                  }}
+                  id='draggable-head'
+                >
+                  <TableRow>
+                    <StyledTableCell>ID</StyledTableCell>
+                    <StyledTableCell align='left'>Avatar</StyledTableCell>
+                    <StyledTableCell>Name</StyledTableCell>
+                    <StyledTableCell align='right'>
+                      <IconButton
+                        size='small'
+                        onClick={onShowAction}
+                        color='secondary'
+                      >
+                        <FontAwesomeIcon icon={faXmarkCircle} />
+                      </IconButton>
+                    </StyledTableCell>
+                  </TableRow>
+                </TableHead>
+                <TableBody>
+                  {members?.map((row) => (
+                    <StyledTableRow key={row.userId}>
+                      <StyledTableCell component='th' scope='row'>
+                        {row.userId}
+                      </StyledTableCell>
+                      <StyledTableCell align='left'>
+                        <Avatar alt={row.name} src={row.avatar} />
+                      </StyledTableCell>
+                      <StyledTableCell>{row.name}</StyledTableCell>
+                      <StyledTableCell align='right'>
+                        <IconButton color='error' size='small'>
+                          <FontAwesomeIcon icon={faSquareMinus} />
+                        </IconButton>
+                      </StyledTableCell>
+                    </StyledTableRow>
+                  ))}
+                  <StyledTableRow
+                    sx={(theme) => ({
+                      transition: 'all ease 0.2s',
+                    })}
+                    width={'100%'}
+                  >
+                    <StyledTableCell component='th' scope='row'>
+                      <Typography
+                        sx={{
+                          minWidth: '80px',
+                        }}
+                        variant='subtitle1'
+                        fontWeight={700}
+                      >
+                        Add more
+                      </Typography>
+                    </StyledTableCell>
+                    <StyledTableCell align='left'>
+                      <IconButton
+                        onClick={() => setIsExpand((prev) => !prev)}
+                        color='success'
+                      >
+                        <FontAwesomeIcon
+                          icon={!isExpand ? faPlus : faXmarkCircle}
+                        />
+                      </IconButton>
+                    </StyledTableCell>
+                    <StyledTableCell
+                      sx={{
+                        minWidth: '120px',
+                      }}
+                    >
+                      <CustomizedAutocomplete
+                        onSetId={(userId) => setUserId(userId)}
+                        in={isExpand}
+                      />
+                    </StyledTableCell>
+                    <StyledTableCell align='right'>
+                      <Grow in={isExpand}>
+                        <Button
+                          onClick={() => assignUserHandler()}
+                          color='primary'
+                          variant='contained'
+                        >
+                          Add
+                        </Button>
+                      </Grow>
+                    </StyledTableCell>
+                  </StyledTableRow>
+                </TableBody>
+              </Table>
+            </TableContainer>
+          </MembersActionWrapper>
+        </Fade>
+      </Draggable>
+    );
+  }
+);
 
 export default MembersAction;

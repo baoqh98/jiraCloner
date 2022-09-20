@@ -8,7 +8,8 @@ const initialState = {
   error: '',
 };
 
-const { getAllProjects, createProject, deleteProject } = projectAPIs;
+const { getAllProjects, createProject, deleteProject, assignUser } =
+  projectAPIs;
 
 export const getAllProjectsThunk = thunk.request(
   'project/getAllProjects',
@@ -21,8 +22,13 @@ export const createProjectThunk = thunk.request(
 );
 
 export const deleteProjectThunk = thunk.request(
-  'project/createProject',
+  'project/deleteProject',
   deleteProject
+);
+
+export const assignUserProjectThunk = thunk.request(
+  'project/assignUserProject',
+  assignUser
 );
 
 const projectSlice = createSlice({

@@ -1,16 +1,10 @@
 import React, { useState } from 'react';
-import {
-  Avatar,
-  AvatarGroup,
-  Box,
-  ClickAwayListener,
-  IconButton,
-} from '@mui/material';
+import { Avatar, AvatarGroup, Box } from '@mui/material';
 import MembersAction from '../MembersAction/MembersAction';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPlus } from '@fortawesome/free-solid-svg-icons';
 
-const Members = ({ members }) => {
+const Members = React.memo(({ projectId, members }) => {
   const [isShowAction, setIsShowAction] = useState(false);
 
   const setIsShowActionHandler = () => {
@@ -32,12 +26,12 @@ const Members = ({ members }) => {
         </Avatar>
       </AvatarGroup>
       <MembersAction
+        projectId={projectId}
         onShowAction={setIsShowActionHandler}
         isShowAction={isShowAction}
-        members={members}
       />
     </Box>
   );
-};
+});
 
 export default Members;

@@ -66,14 +66,13 @@ const Project = () => {
   const [isDialogOpen, setIsDialog] = useState(false);
   const [projectPayload, setProjectPayload] = useState(null);
   const { alertState, dispatchAlert } = useAlert();
+  const dispatch = useDispatch();
 
   const {
     projects,
     isLoading: getLoading,
     error: projectError,
   } = useSelector(projectSelector);
-
-  const dispatch = useDispatch();
 
   const deleteProjectHandler = async (id) => {
     try {
@@ -153,7 +152,7 @@ const Project = () => {
           />
         </TableCellBody>
         <TableCellBody align='left'>
-          <Members members={members} />
+          <Members members={members} projectId={id} />
         </TableCellBody>
         <TableCellBody component='th' scope='row'>
           {creator.name}

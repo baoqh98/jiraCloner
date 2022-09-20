@@ -16,6 +16,10 @@ const projectAPIs = {
       params,
     });
   },
+
+  assignUser: (payload) => {
+    return axiosClient.post('Project/assignUserProject', payload);
+  },
 };
 
 export default projectAPIs;
