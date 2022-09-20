@@ -67,9 +67,9 @@ function App() {
         <Routes>
           <Route path='/' element={<MainLayout />}>
             <Route path='/project' element={<Project />} />
-            <Route path='/project/create-project' element={<CreateProject />} />
             <Route path='/project'>
-              <Route path='board' element={<Board />} />
+              <Route path='create-project' element={<CreateProject />} />
+              <Route path='board/:projectName' element={<Board />} />
               <Route path='create-task' />
               <Route path='setting' />
             </Route>

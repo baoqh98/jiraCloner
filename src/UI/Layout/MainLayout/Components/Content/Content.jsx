@@ -16,7 +16,15 @@ const ContentWrapper = styled(Box)(({ theme }) => ({
 
 const Content = () => {
   const { pathname } = useLocation();
-  const breadcrumbsData = pathname.slice(1).split('/');
+
+  const utf8ToText = (s) => {
+    return unescape(encodeURIComponent(s));
+  };
+
+  const breadcrumbsData = pathname
+    .slice(1)
+    .split('/')
+    .map((item) => item.replace(/%20/g, ' '));
 
   return (
     <ContentWrapper>
@@ -25,7 +33,7 @@ const Content = () => {
         <Grid container spacing={4}>
           <Grid xs={12}>
             <Breadcrumbs aria-label='breadcrumb'>
-              {breadcrumbsData.map((item) => (
+              {breadcrumbsData?.map((item) => (
                 <Typography
                   sx={{
                     textTransform: 'capitalize',

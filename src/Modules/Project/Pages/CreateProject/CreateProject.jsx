@@ -14,7 +14,7 @@ import {
 } from '@mui/material';
 import Grid2 from '@mui/material/Unstable_Grid2/Grid2';
 import { Container } from '@mui/system';
-import RichTextEditor from './RichTextEditor';
+import RichTextEditor from '../../../../UI/Modules/RichTextEditor';
 
 import { useRequest } from '../../../../app/hooks/request/useRequest';
 import projectCategory from '../../../../app/apis/projectCategory/projectCategory';

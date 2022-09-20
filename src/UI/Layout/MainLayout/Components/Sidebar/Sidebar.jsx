@@ -145,6 +145,9 @@ const Sidebar = () => {
                       color: isActive
                         ? theme.palette.primary.dark
                         : colors.grey[900],
+                      span: {
+                        fontWeight: isActive ? 700 : 500,
+                      },
                     })}
                   >
                     {item.label}

@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-
+import { useNavigate } from 'react-router-dom';
 import { alpha, Container } from '@mui/system';
 import {
   Typography,
@@ -20,8 +20,6 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPen, faTrash } from '@fortawesome/free-solid-svg-icons';
 
 import { useDispatch, useSelector } from 'react-redux';
-
-import { useRequest } from '../../../../app/hooks/request/useRequest';
 
 import Loader from '../../../../UI/Display/Loader';
 import Members from '../../Components/Members';
@@ -64,6 +62,8 @@ const Project = () => {
   const { alertState, dispatchAlert } = useAlert();
   const dispatch = useDispatch();
 
+  const navigate = useNavigate();
+
   const { data: userData } = useSelector(authSelector);
 
   const {
@@ -105,13 +105,22 @@ const Project = () => {
         key={id}
         sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
       >
-        <TableCellBody>
+        <TableCellBody
+          onClick={() =>
+            navigate(`/project/board/${projectName.replace('/', '-')}`)
+          }
+        >
           <Chip
             color={`${creator.name === userData.name ? 'success' : 'info'}`}
             size='small'
             sx={(theme) => ({
               borderRadius: '4px',
               fontSize: '12px',
+              transition: 'all ease 0.05s',
+              cursor: 'pointer',
+              '&:hover': {
+                transform: 'scale(110%)',
+              },
             })}
             variant={`${
               creator.name === userData.name ? 'contained' : 'outlined'

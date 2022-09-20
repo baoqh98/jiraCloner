@@ -1,9 +1,8 @@
+import { Navigate, useLocation, useParams } from 'react-router-dom';
 import { Container } from '@mui/system';
 import Grid from '@mui/material/Unstable_Grid2';
 import React from 'react';
 import { Typography, Box, styled, Chip, colors } from '@mui/material';
-import { faSearch } from '@fortawesome/free-solid-svg-icons';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import Filter from '../Components/Filter/Filter';
 import IssueDetails from '../Components/IssueDetails';
 

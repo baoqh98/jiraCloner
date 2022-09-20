@@ -1,9 +1,18 @@
-import React, { useState } from 'react';
-import ReactDOM from 'react-dom';
+import React from 'react';
 import { Editor, EditorState, RichUtils, getDefaultKeyBinding } from 'draft-js';
 import './RichTextEditor.css';
 import { Box } from '@mui/material';
 import { convertToHTML } from 'draft-convert';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import {
+  faBold,
+  faCode,
+  faItalic,
+  faList,
+  faListOl,
+  faQuoteLeft,
+  faUnderline,
+} from '@fortawesome/free-solid-svg-icons';
 
 export default class RichTextEditor extends React.Component {
   constructor(props) {
@@ -148,10 +157,10 @@ const BLOCK_TYPES = [
   { label: 'H4', style: 'header-four' },
   { label: 'H5', style: 'header-five' },
   { label: 'H6', style: 'header-six' },
-  { label: 'Blockquote', style: 'blockquote' },
-  { label: 'UL', style: 'unordered-list-item' },
-  { label: 'OL', style: 'ordered-list-item' },
-  { label: 'Code Block', style: 'code-block' },
+  { label: <FontAwesomeIcon icon={faQuoteLeft} />, style: 'blockquote' },
+  { label: <FontAwesomeIcon icon={faList} />, style: 'unordered-list-item' },
+  { label: <FontAwesomeIcon icon={faListOl} />, style: 'ordered-list-item' },
+  { label: <FontAwesomeIcon icon={faCode} />, style: 'code-block' },
 ];
 
 const BlockStyleControls = (props) => {
@@ -166,7 +175,7 @@ const BlockStyleControls = (props) => {
     <div className='RichEditor-controls'>
       {BLOCK_TYPES.map((type) => (
         <StyleButton
-          key={type.label}
+          key={type.style}
           active={type.style === blockType}
           label={type.label}
           onToggle={props.onToggle}
@@ -178,10 +187,10 @@ const BlockStyleControls = (props) => {
 };
 
 var INLINE_STYLES = [
-  { label: 'Bold', style: 'BOLD' },
-  { label: 'Italic', style: 'ITALIC' },
-  { label: 'Underline', style: 'UNDERLINE' },
-  { label: 'Monospace', style: 'CODE' },
+  { label: <FontAwesomeIcon icon={faBold} />, style: 'BOLD' },
+  { label: <FontAwesomeIcon icon={faItalic} />, style: 'ITALIC' },
+  { label: <FontAwesomeIcon icon={faUnderline} />, style: 'UNDERLINE' },
+  { label: 'monospace', style: 'CODE' },
 ];
 
 const InlineStyleControls = (props) => {
@@ -191,7 +200,7 @@ const InlineStyleControls = (props) => {
     <div className='RichEditor-controls'>
       {INLINE_STYLES.map((type) => (
         <StyleButton
-          key={type.label}
+          key={type.style}
           active={currentStyle.has(type.style)}
           label={type.label}
           onToggle={props.onToggle}
