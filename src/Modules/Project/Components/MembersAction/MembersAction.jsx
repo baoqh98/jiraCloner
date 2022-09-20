@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import ReactDOM from 'react-dom';
+import React, { useState, useEffect, useCallback } from 'react';
+
 import {
   faPlus,
   faSquareMinus,
@@ -19,12 +19,10 @@ import {
   Fade,
   IconButton,
   Typography,
-  Select,
   TextField,
   Grow,
   Button,
   Autocomplete,
-  CircularProgress,
   MenuItem,
   Snackbar,
   Alert,
@@ -35,9 +33,10 @@ import { useRequest } from '../../../../app/hooks/request/useRequest';
 import { alertCase, useAlert } from '../../../../app/hooks/alert/useAlert';
 import usersAPIs from '../../../../app/apis/userAPIs/usersAPIs';
 import { useDispatch } from 'react-redux';
-import { assignUserProjectThunk } from '../../slice/projectSlice';
-import { useEffect } from 'react';
-import { useCallback } from 'react';
+import {
+  assignUserProjectThunk,
+  removeUserFromProjectThunk,
+} from '../../slice/projectSlice';
 
 const MembersActionWrapper = styled(Paper)(({ theme }) => ({
   position: 'absolute',
@@ -74,7 +73,7 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
   },
 }));
 
-const { getUser, getUserByProjectId, deleteUser } = usersAPIs;
+const { getUser, getUserByProjectId } = usersAPIs;
 
 const CustomizedAutocomplete = (props) => {
   const { data: users } = useRequest(getUser);
@@ -113,12 +112,13 @@ const CustomizedAutocomplete = (props) => {
 
 const MembersAction = React.memo(
   ({ isShowAction, onShowAction, projectId }) => {
-    // const { data: members, error } = useRequest(() =>
-    //   getUserByProjectId(projectId)
-    // );
-    const { data: requestGet, error } = useRequest(getUserByProjectId, {
-      isManual: true,
-    });
+    const { data: requestGet, error: getError } = useRequest(
+      getUserByProjectId,
+      {
+        isManual: true,
+      }
+    );
+    const { data: requestDel, error: delError } = useRequest();
     const [members, setMembers] = useState(null);
     const [isExpand, setIsExpand] = useState(false);
     const [userId, setUserId] = useState(null);
@@ -138,12 +138,24 @@ const MembersAction = React.memo(
         const data = await dispatch(
           assignUserProjectThunk({ userId, projectId })
         ).unwrap();
-        // .then(() => getUserByProjectId(projectId));
         dispatchAlert({ type: alertCase.success, payload: data });
-
+        await getMembersHandler(projectId);
         return data;
       } catch (error) {
         dispatchAlert({ type: alertCase.error, payload: error });
+      }
+    };
+
+    const deleteMemberHandler = async (userId) => {
+      try {
+        const data = await dispatch(
+          removeUserFromProjectThunk({ projectId, userId })
+        ).unwrap();
+        dispatchAlert({ type: alertCase.success, payload: data });
+        await getMembersHandler(projectId);
+        return data;
+      } catch (error) {
+        return error;
       }
     };
 
@@ -180,6 +192,20 @@ const MembersAction = React.memo(
             {alertState.successMessage}
           </Alert>
         </Snackbar>
+        <Snackbar
+          anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
+          open={!!alertState.errorMessage}
+          autoHideDuration={3000}
+          onClose={handleCloseSnack}
+        >
+          <Alert
+            onClose={handleCloseSnack}
+            severity='error'
+            sx={{ width: '100%' }}
+          >
+            {alertState.errorMessage}
+          </Alert>
+        </Snackbar>
         <Draggable handle='#draggable-head'>
           <Fade in={isShowAction}>
             <MembersActionWrapper>
@@ -211,7 +237,7 @@ const MembersAction = React.memo(
                     </TableRow>
                   </TableHead>
                   <TableBody>
-                    {!error &&
+                    {!getError &&
                       members?.map((row) => (
                         <StyledTableRow key={row.userId}>
                           <StyledTableCell component='th' scope='row'>
@@ -222,7 +248,11 @@ const MembersAction = React.memo(
                           </StyledTableCell>
                           <StyledTableCell>{row.name}</StyledTableCell>
                           <StyledTableCell align='right'>
-                            <IconButton color='error' size='small'>
+                            <IconButton
+                              onClick={() => deleteMemberHandler(row.userId)}
+                              color='error'
+                              size='small'
+                            >
                               <FontAwesomeIcon icon={faSquareMinus} />
                             </IconButton>
                           </StyledTableCell>
@@ -268,11 +298,7 @@ const MembersAction = React.memo(
                       <StyledTableCell align='right'>
                         <Grow in={isExpand}>
                           <Button
-                            onClick={() =>
-                              assignUserHandler().then(() =>
-                                getMembersHandler(projectId)
-                              )
-                            }
+                            onClick={assignUserHandler}
                             color='primary'
                             variant='contained'
                           >

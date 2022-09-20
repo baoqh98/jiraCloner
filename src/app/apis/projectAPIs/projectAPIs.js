@@ -17,8 +17,13 @@ const projectAPIs = {
     });
   },
 
-  assignUser: (payload) => {
-    return axiosClient.post('Project/assignUserProject', payload);
+  removeUserFromProject: (userProject) => {
+    console.log(userProject);
+    return axiosClient.post('Project/removeUserFromProject', userProject);
+  },
+
+  assignUser: (userProject) => {
+    return axiosClient.post('Project/assignUserProject', userProject);
   },
 };
 
