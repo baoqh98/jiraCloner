@@ -33,7 +33,7 @@ import {
   deleteProjectThunk,
   getAllProjectsThunk,
 } from '../../slice/projectSlice';
-import { projectSelector } from '../../../../app/store';
+import { authSelector, projectSelector } from '../../../../app/store';
 import useAlert, {
   alertCase,
   initialAlertState,
@@ -67,6 +67,10 @@ const Project = () => {
   const [projectPayload, setProjectPayload] = useState(null);
   const { alertState, dispatchAlert } = useAlert();
   const dispatch = useDispatch();
+
+  const { data: userData } = useSelector(authSelector);
+
+  console.log(userData.id);
 
   const {
     projects,
@@ -103,6 +107,8 @@ const Project = () => {
       setProjectPayload({ id, projectName });
     };
 
+    console.log(creator);
+
     return (
       <TableRow
         key={id}
@@ -110,14 +116,15 @@ const Project = () => {
       >
         <TableCellBody>
           <Chip
-            color='info'
+            color={`${creator.name === userData.name ? 'success' : 'info'}`}
             size='small'
             sx={(theme) => ({
               borderRadius: '4px',
               fontSize: '12px',
-              color: theme.palette.primary.light,
             })}
-            variant='outlined'
+            variant={`${
+              creator.name === userData.name ? 'contained' : 'outlined'
+            }`}
             label={`ID: ${id}`}
           />
         </TableCellBody>

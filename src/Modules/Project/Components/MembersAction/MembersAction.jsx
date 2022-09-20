@@ -155,7 +155,7 @@ const MembersAction = React.memo(
         await getMembersHandler(projectId);
         return data;
       } catch (error) {
-        return error;
+        dispatchAlert({ type: alertCase.error, payload: error });
       }
     };
 
