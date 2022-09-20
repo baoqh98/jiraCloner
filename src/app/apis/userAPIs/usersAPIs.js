@@ -1,7 +1,7 @@
 import { axiosClient } from '../axiosClient';
 
 const usersAPIs = {
-  getUser: () => {
+  getUsers: () => {
     return axiosClient.get('Users/getUser');
   },
 

@@ -32,11 +32,13 @@ import Draggable from 'react-draggable';
 import { useRequest } from '../../../../app/hooks/request/useRequest';
 import { alertCase, useAlert } from '../../../../app/hooks/alert/useAlert';
 import usersAPIs from '../../../../app/apis/userAPIs/usersAPIs';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import {
   assignUserProjectThunk,
   removeUserFromProjectThunk,
 } from '../../slice/projectSlice';
+import { getUserByProjectIdThunk } from '../../slice/membersSlice';
+import { membersSelector } from '../../../../app/store';
 
 const MembersActionWrapper = styled(Paper)(({ theme }) => ({
   position: 'absolute',
@@ -73,10 +75,10 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
   },
 }));
 
-const { getUser, getUserByProjectId } = usersAPIs;
+const { getUsers, getUserByProjectId } = usersAPIs;
 
 const CustomizedAutocomplete = (props) => {
-  const { data: users } = useRequest(getUser);
+  const { data: users } = useRequest(getUsers);
 
   const userOptions = users?.map((item) => ({
     label: item.name,
@@ -111,15 +113,14 @@ const CustomizedAutocomplete = (props) => {
 };
 
 const MembersAction = React.memo(
-  ({ isShowAction, onShowAction, projectId }) => {
+  ({ isShowAction, onShowAction, onSuccess, projectId }) => {
     const { data: requestGet, error: getError } = useRequest(
       getUserByProjectId,
       {
         isManual: true,
       }
     );
-    const { data: requestDel, error: delError } = useRequest();
-    const [members, setMembers] = useState(null);
+    const [members, setMembers] = useState([]);
     const [isExpand, setIsExpand] = useState(false);
     const [userId, setUserId] = useState(null);
     const { alertState, dispatchAlert } = useAlert();
@@ -131,6 +132,11 @@ const MembersAction = React.memo(
         return;
       }
       dispatchAlert({ type: alertCase.reset });
+    };
+
+    const closeActionHandler = () => {
+      onShowAction();
+      onSuccess();
     };
 
     const assignUserHandler = async () => {
@@ -166,6 +172,7 @@ const MembersAction = React.memo(
           setMembers(data);
           return data;
         } catch (error) {
+          setMembers([]);
           return error;
         }
       },
@@ -228,7 +235,7 @@ const MembersAction = React.memo(
                       <StyledTableCell align='right'>
                         <IconButton
                           size='small'
-                          onClick={onShowAction}
+                          onClick={closeActionHandler}
                           color='secondary'
                         >
                           <FontAwesomeIcon icon={faXmarkCircle} />

@@ -22,7 +22,6 @@ import { faPen, faTrash } from '@fortawesome/free-solid-svg-icons';
 import { useDispatch, useSelector } from 'react-redux';
 
 import { useRequest } from '../../../../app/hooks/request/useRequest';
-import projectAPIs from '../../../../app/apis/projectAPIs/projectAPIs';
 
 import Loader from '../../../../UI/Display/Loader';
 import Members from '../../Components/Members';
@@ -34,10 +33,7 @@ import {
   getAllProjectsThunk,
 } from '../../slice/projectSlice';
 import { authSelector, projectSelector } from '../../../../app/store';
-import useAlert, {
-  alertCase,
-  initialAlertState,
-} from '../../../../app/hooks/alert/useAlert';
+import useAlert, { alertCase } from '../../../../app/hooks/alert/useAlert';
 
 const Heading = styled(Box)(({ theme }) => ({
   textAlign: 'left',
@@ -70,8 +66,6 @@ const Project = () => {
 
   const { data: userData } = useSelector(authSelector);
 
-  console.log(userData.id);
-
   const {
     projects,
     isLoading: getLoading,
@@ -98,16 +92,13 @@ const Project = () => {
   }, []);
 
   const rows = projects?.map((row) => {
-    const { id, projectName, categoryName, members, creator, description } =
-      row;
+    const { id, projectName, categoryName, creator, description } = row;
     const formattedDescription = description.replace(/<[^>]*>/g, '');
 
     const dialogSettingHandler = (id, projectName) => {
       setIsDialog(true);
       setProjectPayload({ id, projectName });
     };
-
-    console.log(creator);
 
     return (
       <TableRow
@@ -159,7 +150,7 @@ const Project = () => {
           />
         </TableCellBody>
         <TableCellBody align='left'>
-          <Members members={members} projectId={id} />
+          <Members projectId={id} />
         </TableCellBody>
         <TableCellBody component='th' scope='row'>
           {creator.name}

@@ -5,6 +5,7 @@ import { Typography, Box, styled, Chip, colors } from '@mui/material';
 import { faSearch } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import Filter from '../Components/Filter/Filter';
+import IssueDetails from '../Components/IssueDetails';
 
 const Heading = styled(Box)(({ theme }) => ({
   textAlign: 'left',
@@ -25,7 +26,7 @@ const tagsData = [
   {
     label: 'My Portfolio',
     icon: '/assets/portfolioicon.png',
-    link: 'https://github.com/hoquocbaoproton/jiraCloner',
+    link: 'https://www.topcv.vn/xem-cv/AVJRAgRSUVgOU1RbUgEBAw9SA1FbU1ICUgIEAA215f',
   },
   {
     label: 'hoquocbaocyber@gmail.com',
@@ -73,6 +74,7 @@ const Board = () => {
         </Grid>
         <Grid mt={3} xs={12}>
           <Filter />
+          <IssueDetails />
         </Grid>
       </Grid>
     </Container>

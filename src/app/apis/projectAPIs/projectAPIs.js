@@ -18,7 +18,6 @@ const projectAPIs = {
   },
 
   removeUserFromProject: (userProject) => {
-    console.log(userProject);
     return axiosClient.post('Project/removeUserFromProject', userProject);
   },
 
