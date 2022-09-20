@@ -26,13 +26,18 @@ import {
   Autocomplete,
   CircularProgress,
   MenuItem,
+  Snackbar,
+  Alert,
 } from '@mui/material';
 import TableCell, { tableCellClasses } from '@mui/material/TableCell';
 import Draggable from 'react-draggable';
 import { useRequest } from '../../../../app/hooks/request/useRequest';
+import { alertCase, useAlert } from '../../../../app/hooks/alert/useAlert';
 import usersAPIs from '../../../../app/apis/userAPIs/usersAPIs';
 import { useDispatch } from 'react-redux';
 import { assignUserProjectThunk } from '../../slice/projectSlice';
+import { useEffect } from 'react';
+import { useCallback } from 'react';
 
 const MembersActionWrapper = styled(Paper)(({ theme }) => ({
   position: 'absolute',
@@ -108,130 +113,181 @@ const CustomizedAutocomplete = (props) => {
 
 const MembersAction = React.memo(
   ({ isShowAction, onShowAction, projectId }) => {
-    const { data: members } = useRequest(() => getUserByProjectId(projectId));
+    // const { data: members, error } = useRequest(() =>
+    //   getUserByProjectId(projectId)
+    // );
+    const { data: requestGet, error } = useRequest(getUserByProjectId, {
+      isManual: true,
+    });
+    const [members, setMembers] = useState(null);
     const [isExpand, setIsExpand] = useState(false);
     const [userId, setUserId] = useState(null);
+    const { alertState, dispatchAlert } = useAlert();
 
     const dispatch = useDispatch();
 
-    console.log(members, projectId);
-
-    const assignUserHandler = async () => {
-      console.log(userId);
-      console.log(projectId);
-      try {
-        // const data = await dispatch(
-        //   assignUserProjectThunk({ userId, projectId })
-        // ).unwrap();
-        // .then(() => dispatch());
-        // console.log(data);
-        // return data;
-      } catch (error) {}
+    const handleCloseSnack = (event, reason) => {
+      if (reason === 'clickaway') {
+        return;
+      }
+      dispatchAlert({ type: alertCase.reset });
     };
 
+    const assignUserHandler = async () => {
+      try {
+        const data = await dispatch(
+          assignUserProjectThunk({ userId, projectId })
+        ).unwrap();
+        // .then(() => getUserByProjectId(projectId));
+        dispatchAlert({ type: alertCase.success, payload: data });
+
+        return data;
+      } catch (error) {
+        dispatchAlert({ type: alertCase.error, payload: error });
+      }
+    };
+
+    const getMembersHandler = useCallback(
+      async (projectId) => {
+        try {
+          const data = await requestGet(projectId);
+          setMembers(data);
+          return data;
+        } catch (error) {
+          return error;
+        }
+      },
+      [requestGet]
+    );
+
+    useEffect(() => {
+      getMembersHandler(projectId);
+    }, []);
+
     return (
-      <Draggable handle='#draggable-head'>
-        <Fade in={isShowAction}>
-          <MembersActionWrapper>
-            <TableContainer sx={{ maxHeight: 480, overflow: 'overlay' }}>
-              <Table
-                stickyHeader
-                sx={{ minWidth: 560 }}
-                aria-label='customized table'
-              >
-                <TableHead
-                  sx={{
-                    cursor: 'move',
-                  }}
-                  id='draggable-head'
+      <>
+        <Snackbar
+          anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
+          open={!!alertState.successMessage}
+          autoHideDuration={3000}
+          onClose={handleCloseSnack}
+        >
+          <Alert
+            onClose={handleCloseSnack}
+            severity='success'
+            sx={{ width: '100%' }}
+          >
+            {alertState.successMessage}
+          </Alert>
+        </Snackbar>
+        <Draggable handle='#draggable-head'>
+          <Fade in={isShowAction}>
+            <MembersActionWrapper>
+              <TableContainer sx={{ maxHeight: 480, overflow: 'overlay' }}>
+                <Table
+                  stickyHeader
+                  sx={{ minWidth: 560 }}
+                  aria-label='customized table'
                 >
-                  <TableRow>
-                    <StyledTableCell>ID</StyledTableCell>
-                    <StyledTableCell align='left'>Avatar</StyledTableCell>
-                    <StyledTableCell>Name</StyledTableCell>
-                    <StyledTableCell align='right'>
-                      <IconButton
-                        size='small'
-                        onClick={onShowAction}
-                        color='secondary'
-                      >
-                        <FontAwesomeIcon icon={faXmarkCircle} />
-                      </IconButton>
-                    </StyledTableCell>
-                  </TableRow>
-                </TableHead>
-                <TableBody>
-                  {members?.map((row) => (
-                    <StyledTableRow key={row.userId}>
-                      <StyledTableCell component='th' scope='row'>
-                        {row.userId}
-                      </StyledTableCell>
-                      <StyledTableCell align='left'>
-                        <Avatar alt={row.name} src={row.avatar} />
-                      </StyledTableCell>
-                      <StyledTableCell>{row.name}</StyledTableCell>
+                  <TableHead
+                    sx={{
+                      cursor: 'move',
+                    }}
+                    id='draggable-head'
+                  >
+                    <TableRow>
+                      <StyledTableCell>ID</StyledTableCell>
+                      <StyledTableCell align='left'>Avatar</StyledTableCell>
+                      <StyledTableCell>Name</StyledTableCell>
                       <StyledTableCell align='right'>
-                        <IconButton color='error' size='small'>
-                          <FontAwesomeIcon icon={faSquareMinus} />
+                        <IconButton
+                          size='small'
+                          onClick={onShowAction}
+                          color='secondary'
+                        >
+                          <FontAwesomeIcon icon={faXmarkCircle} />
                         </IconButton>
                       </StyledTableCell>
-                    </StyledTableRow>
-                  ))}
-                  <StyledTableRow
-                    sx={(theme) => ({
-                      transition: 'all ease 0.2s',
-                    })}
-                    width={'100%'}
-                  >
-                    <StyledTableCell component='th' scope='row'>
-                      <Typography
-                        sx={{
-                          minWidth: '80px',
-                        }}
-                        variant='subtitle1'
-                        fontWeight={700}
-                      >
-                        Add more
-                      </Typography>
-                    </StyledTableCell>
-                    <StyledTableCell align='left'>
-                      <IconButton
-                        onClick={() => setIsExpand((prev) => !prev)}
-                        color='success'
-                      >
-                        <FontAwesomeIcon
-                          icon={!isExpand ? faPlus : faXmarkCircle}
-                        />
-                      </IconButton>
-                    </StyledTableCell>
-                    <StyledTableCell
-                      sx={{
-                        minWidth: '120px',
-                      }}
+                    </TableRow>
+                  </TableHead>
+                  <TableBody>
+                    {!error &&
+                      members?.map((row) => (
+                        <StyledTableRow key={row.userId}>
+                          <StyledTableCell component='th' scope='row'>
+                            {row.userId}
+                          </StyledTableCell>
+                          <StyledTableCell align='left'>
+                            <Avatar alt={row.name} src={row.avatar} />
+                          </StyledTableCell>
+                          <StyledTableCell>{row.name}</StyledTableCell>
+                          <StyledTableCell align='right'>
+                            <IconButton color='error' size='small'>
+                              <FontAwesomeIcon icon={faSquareMinus} />
+                            </IconButton>
+                          </StyledTableCell>
+                        </StyledTableRow>
+                      ))}
+                    <StyledTableRow
+                      sx={(theme) => ({
+                        transition: 'all ease 0.2s',
+                      })}
+                      width={'100%'}
                     >
-                      <CustomizedAutocomplete
-                        onSetId={(userId) => setUserId(userId)}
-                        in={isExpand}
-                      />
-                    </StyledTableCell>
-                    <StyledTableCell align='right'>
-                      <Grow in={isExpand}>
-                        <Button
-                          onClick={() => assignUserHandler()}
-                          color='primary'
-                          variant='contained'
+                      <StyledTableCell component='th' scope='row'>
+                        <Typography
+                          sx={{
+                            minWidth: '80px',
+                          }}
+                          variant='subtitle1'
+                          fontWeight={700}
                         >
-                          Add
-                        </Button>
-                      </Grow>
-                    </StyledTableCell>
-                  </StyledTableRow>
-                </TableBody>
-              </Table>
-            </TableContainer>
-          </MembersActionWrapper>
-        </Fade>
-      </Draggable>
+                          Add more
+                        </Typography>
+                      </StyledTableCell>
+                      <StyledTableCell align='left'>
+                        <IconButton
+                          onClick={() => setIsExpand((prev) => !prev)}
+                          color='success'
+                        >
+                          <FontAwesomeIcon
+                            icon={!isExpand ? faPlus : faXmarkCircle}
+                          />
+                        </IconButton>
+                      </StyledTableCell>
+                      <StyledTableCell
+                        sx={{
+                          minWidth: '120px',
+                        }}
+                      >
+                        <CustomizedAutocomplete
+                          onSetId={(userId) => setUserId(userId)}
+                          in={isExpand}
+                        />
+                      </StyledTableCell>
+                      <StyledTableCell align='right'>
+                        <Grow in={isExpand}>
+                          <Button
+                            onClick={() =>
+                              assignUserHandler().then(() =>
+                                getMembersHandler(projectId)
+                              )
+                            }
+                            color='primary'
+                            variant='contained'
+                          >
+                            Add
+                          </Button>
+                        </Grow>
+                      </StyledTableCell>
+                    </StyledTableRow>
+                  </TableBody>
+                </Table>
+              </TableContainer>
+            </MembersActionWrapper>
+          </Fade>
+        </Draggable>
+      </>
     );
   }
 );

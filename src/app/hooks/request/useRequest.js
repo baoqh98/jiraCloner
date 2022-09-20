@@ -47,7 +47,7 @@ export const useRequest = (fn, config = {}) => {
   const [state, dispatch] = useReducer(requestReducer, initialState);
   const { isManual = false, deps = [] } = config;
 
-  const request = async (params = undefined) => {
+  const request = async (params) => {
     try {
       dispatch({ type: requestCase.pending });
       const data = await fn(params);
