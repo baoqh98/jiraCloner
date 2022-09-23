@@ -170,23 +170,19 @@ const RichTextEditor = ({ content, onWatch }) => {
   }, [editorState]);
 
   useEffect(() => {
+    // problem here
     if (content) {
       const blocksFromHTML = convertFromHTML(content);
       const state = ContentState.createFromBlockArray(
         blocksFromHTML.contentBlocks,
         blocksFromHTML.entityMap
       );
-      const newState = EditorState.createEmpty();
-      const currentState = EditorState.createWithContent(state);
+      // do not need to care two line of code
 
-      console.log(newState);
-      console.log(currentState);
+      // const newState = EditorState.createEmpty();
+      // const currentState = EditorState.createWithContent(state);
 
-      // this.setState(stateWithContentAndSelection);
-
-      setEditorState(
-        EditorState.push(newState, EditorState.moveFocusToEnd(currentState))
-      );
+      setEditorState(EditorState.createWithContent(state));
     }
   }, [content]);
 
