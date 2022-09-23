@@ -8,20 +8,25 @@
 }
 
 .RichEditor-editor {
-  border-top: 1.5px solid #bdbdbd;
+  border-top: 1.2px solid #bdbdbd;
   cursor: text;
   font-size: 16px;
   margin-top: 10px;
+}
+
+.RichEditor-editor .public-DraftEditorPlaceholder-root {
+  color: #bdbdbd;
 }
 
 .RichEditor-editor .public-DraftEditorPlaceholder-root,
 .RichEditor-editor .public-DraftEditor-content {
   margin: 0 -15px -15px;
   padding: 15px;
+  text-align: left;
 }
 
 .RichEditor-editor .public-DraftEditor-content {
-  min-height: 100px;
+  min-height: 300px;
 }
 
 .RichEditor-hidePlaceholder .public-DraftEditorPlaceholder-root {

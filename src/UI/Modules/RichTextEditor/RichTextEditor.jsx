@@ -1,5 +1,12 @@
 import React from 'react';
-import { Editor, EditorState, RichUtils, getDefaultKeyBinding } from 'draft-js';
+import {
+  Editor,
+  EditorState,
+  RichUtils,
+  getDefaultKeyBinding,
+  ContentState,
+  convertFromHTML,
+} from 'draft-js';
 import './RichTextEditor.css';
 import { Box } from '@mui/material';
 import { convertToHTML } from 'draft-convert';
@@ -13,100 +20,26 @@ import {
   faQuoteLeft,
   faUnderline,
 } from '@fortawesome/free-solid-svg-icons';
+import { useState, useRef } from 'react';
+import { useEffect } from 'react';
 
-export default class RichTextEditor extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = { editorState: EditorState.createEmpty() };
+const StyleButton = ({ active, label, onToggle, style }) => {
+  const onToggleHandler = (e) => {
+    e.preventDefault();
+    onToggle(style);
+  };
 
-    this.focus = () => this.refs.editor.focus();
-    this.onChange = (editorState) => this.setState({ editorState });
-
-    this.handleKeyCommand = this._handleKeyCommand.bind(this);
-    this.mapKeyToEditorCommand = this._mapKeyToEditorCommand.bind(this);
-    this.toggleBlockType = this._toggleBlockType.bind(this);
-    this.toggleInlineStyle = this._toggleInlineStyle.bind(this);
+  let className = 'RichEditor-styleButton';
+  if (active) {
+    className += ' RichEditor-activeButton';
   }
 
-  _handleKeyCommand(command, editorState) {
-    const newState = RichUtils.handleKeyCommand(editorState, command);
-    if (newState) {
-      this.onChange(newState);
-      return true;
-    }
-    return false;
-  }
-
-  _mapKeyToEditorCommand(e) {
-    if (e.keyCode === 9 /* TAB */) {
-      const newEditorState = RichUtils.onTab(
-        e,
-        this.state.editorState,
-        4 /* maxDepth */
-      );
-      if (newEditorState !== this.state.editorState) {
-        this.onChange(newEditorState);
-      }
-      return;
-    }
-    return getDefaultKeyBinding(e);
-  }
-
-  _toggleBlockType(blockType) {
-    this.onChange(RichUtils.toggleBlockType(this.state.editorState, blockType));
-  }
-
-  _toggleInlineStyle(inlineStyle) {
-    this.onChange(
-      RichUtils.toggleInlineStyle(this.state.editorState, inlineStyle)
-    );
-  }
-
-  componentDidUpdate() {
-    const { editorState } = this.state;
-    this.props.onWatch(convertToHTML(editorState.getCurrentContent()));
-  }
-
-  render() {
-    const { editorState } = this.state;
-
-    // If the user changes block type before entering any text, we can
-    // either style the placeholder or hide it. Let's just hide it now.
-    let className = 'RichEditor-editor';
-    var contentState = editorState.getCurrentContent();
-    if (!contentState.hasText()) {
-      if (contentState.getBlockMap().first().getType() !== 'unstyled') {
-        className += ' RichEditor-hidePlaceholder';
-      }
-    }
-
-    return (
-      <Box className='RichEditor-root'>
-        <BlockStyleControls
-          editorState={editorState}
-          onToggle={this.toggleBlockType}
-        />
-        <InlineStyleControls
-          editorState={editorState}
-          onToggle={this.toggleInlineStyle}
-        />
-        <Box className={className} onClick={this.focus}>
-          <Editor
-            blockStyleFn={getBlockStyle}
-            customStyleMap={styleMap}
-            editorState={editorState}
-            handleKeyCommand={this.handleKeyCommand}
-            keyBindingFn={this.mapKeyToEditorCommand}
-            onChange={this.onChange}
-            placeholder="Write your project's description..."
-            ref='editor'
-            spellCheck={true}
-          />
-        </Box>
-      </Box>
-    );
-  }
-}
+  return (
+    <span className={className} size='small' onMouseDown={onToggleHandler}>
+      {label}
+    </span>
+  );
+};
 
 // Custom overrides for "code" style.
 const styleMap = {
@@ -124,29 +57,6 @@ function getBlockStyle(block) {
       return 'RichEditor-blockquote';
     default:
       return null;
-  }
-}
-
-class StyleButton extends React.Component {
-  constructor() {
-    super();
-    this.onToggle = (e) => {
-      e.preventDefault();
-      this.props.onToggle(this.props.style);
-    };
-  }
-
-  render() {
-    let className = 'RichEditor-styleButton';
-    if (this.props.active) {
-      className += ' RichEditor-activeButton';
-    }
-
-    return (
-      <span className={className} size='small' onMouseDown={this.onToggle}>
-        {this.props.label}
-      </span>
-    );
   }
 }
 
@@ -210,3 +120,101 @@ const InlineStyleControls = (props) => {
     </div>
   );
 };
+
+const RichTextEditor = ({ content, onWatch }) => {
+  const [editorState, setEditorState] = useState(EditorState.createEmpty());
+  const editorRef = useRef(null);
+
+  const handleChange = (editorState) => setEditorState(editorState);
+
+  const handleFocus = () => editorRef.current.focus();
+
+  const handleKeyCommand = (command, editorState) => {
+    const newState = RichUtils.handleKeyCommand(editorState, command);
+    if (newState) {
+      handleChange(newState);
+      return true;
+    }
+    return false;
+  };
+
+  const mapKeyToEditorCommand = (e) => {
+    if (e.keyCode === 9 /* TAB */) {
+      const newEditorState = RichUtils.onTab(e, editorState, 4 /* maxDepth */);
+      if (newEditorState !== editorState) {
+        handleChange(newEditorState);
+      }
+      return;
+    }
+    return getDefaultKeyBinding(e);
+  };
+
+  const toggleBlockType = (blockType) => {
+    handleChange(RichUtils.toggleBlockType(editorState, blockType));
+  };
+
+  const toggleInlineStyle = (inlineStyle) => {
+    handleChange(RichUtils.toggleInlineStyle(editorState, inlineStyle));
+  };
+
+  let className = 'RichEditor-editor';
+  const contentState = editorState.getCurrentContent();
+  if (!contentState.hasText()) {
+    if (contentState.getBlockMap().first().getType() !== 'unstyled') {
+      className += ' RichEditor-hidePlaceholder';
+    }
+  }
+
+  useEffect(() => {
+    onWatch(convertToHTML(editorState.getCurrentContent()));
+  }, [editorState]);
+
+  useEffect(() => {
+    if (content) {
+      const blocksFromHTML = convertFromHTML(content);
+      const state = ContentState.createFromBlockArray(
+        blocksFromHTML.contentBlocks,
+        blocksFromHTML.entityMap
+      );
+      const newState = EditorState.createEmpty();
+      const currentState = EditorState.createWithContent(state);
+
+      console.log(newState);
+      console.log(currentState);
+
+      // this.setState(stateWithContentAndSelection);
+
+      setEditorState(
+        EditorState.push(newState, EditorState.moveFocusToEnd(currentState))
+      );
+    }
+  }, [content]);
+
+  return (
+    <Box className='RichEditor-root'>
+      <BlockStyleControls
+        editorState={editorState}
+        onToggle={toggleBlockType}
+      />
+      <InlineStyleControls
+        editorState={editorState}
+        onToggle={toggleInlineStyle}
+      />
+      <Box className={className} onClick={handleFocus}>
+        <Editor
+          blockStyleFn={getBlockStyle}
+          customStyleMap={styleMap}
+          editorState={editorState}
+          handleKeyCommand={handleKeyCommand}
+          keyBindingFn={mapKeyToEditorCommand}
+          onChange={handleChange}
+          placeholder="Write your project's description..."
+          ref={editorRef}
+          spellCheck={true}
+        />
+      </Box>
+    </Box>
+  );
+};
+
+export default RichTextEditor;

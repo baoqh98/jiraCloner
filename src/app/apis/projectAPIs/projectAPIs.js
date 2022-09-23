@@ -5,6 +5,22 @@ const projectAPIs = {
     return axiosClient.get('Project/getAllProject');
   },
 
+  getProjectDetail: (id) => {
+    return axiosClient.get('Project/getProjectDetail', {
+      params: {
+        id: id,
+      },
+    });
+  },
+
+  updateProject: (projectUpdate) => {
+    return axiosClient.put('Project/updateProject', projectUpdate, {
+      params: {
+        projectId: projectUpdate.id,
+      },
+    });
+  },
+
   createProject: (projectInfo) => {
     return axiosClient.post('Project/createProjectAuthorize', projectInfo);
   },

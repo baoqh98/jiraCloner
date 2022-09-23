@@ -105,12 +105,11 @@ const Project = () => {
         key={id}
         sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
       >
-        <TableCellBody
-          onClick={() =>
-            navigate(`/project/board/${projectName.replace('/', '-')}`)
-          }
-        >
+        <TableCellBody>
           <Chip
+            onClick={() =>
+              navigate(`/project/board/${projectName.replace('/', '')}`)
+            }
             color={`${creator.name === userData.name ? 'success' : 'info'}`}
             size='small'
             sx={(theme) => ({

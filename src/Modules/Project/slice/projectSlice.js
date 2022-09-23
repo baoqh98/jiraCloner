@@ -4,12 +4,15 @@ import projectAPIs from '../../../app/apis/projectAPIs/projectAPIs';
 
 const initialState = {
   projects: [],
+  projectDetail: null,
   isLoading: false,
   error: '',
 };
 
 const {
   getAllProjects,
+  getProjectDetail,
+  updateProject,
   createProject,
   deleteProject,
   assignUser,
@@ -19,6 +22,16 @@ const {
 export const getAllProjectsThunk = thunk.request(
   'project/getAllProjects',
   getAllProjects
+);
+
+export const getProjectDetailThunk = thunk.request(
+  'project/getProjectDetail',
+  getProjectDetail
+);
+
+export const updateProjectThunk = thunk.request(
+  'project/updateProject',
+  updateProject
 );
 
 export const createProjectThunk = thunk.request(
@@ -44,7 +57,14 @@ export const assignUserProjectThunk = thunk.request(
 const projectSlice = createSlice({
   name: 'project',
   initialState,
-  reducers: {},
+  reducers: {
+    clearProjectDetail: (state) => {
+      return {
+        ...state,
+        projectDetail: null,
+      };
+    },
+  },
   extraReducers: (builder) => {
     builder
       .addCase(getAllProjectsThunk.pending, (state) => {
@@ -58,7 +78,22 @@ const projectSlice = createSlice({
         state.isLoading = false;
         state.error = payload;
       });
+
+    builder
+      .addCase(getProjectDetailThunk.pending, (state) => {
+        state.projectDetail = null;
+        state.isLoading = true;
+      })
+      .addCase(getProjectDetailThunk.fulfilled, (state, { payload }) => {
+        state.isLoading = false;
+        state.projectDetail = payload;
+      })
+      .addCase(getProjectDetailThunk.rejected, (state, { payload }) => {
+        state.isLoading = false;
+        state.error = payload;
+      });
   },
 });
 
+export const { clearProjectDetail } = projectSlice.actions;
 export default projectSlice.reducer;

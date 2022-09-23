@@ -11,6 +11,7 @@ import './App.css';
 import Board from './Modules/Board/Pages/Board';
 import Loader from './UI/Display/Loader/Loader';
 import { authSelector } from './app/store';
+import SettingProject from './Modules/Project/Pages/SettingProject';
 // import CreateProject from './Modules/Project/Pages/CreateProject';
 // import Project from './Modules/Project/Pages/Project';
 // import MainLayout from './UI/Layout/MainLayout';
@@ -69,9 +70,11 @@ function App() {
             <Route path='/project' element={<Project />} />
             <Route path='/project'>
               <Route path='create-project' element={<CreateProject />} />
+              {/* <Route path='board' element={<CreateProject />} /> */}
               <Route path='board/:projectName' element={<Board />} />
               <Route path='create-task' />
-              <Route path='setting' />
+              <Route path='setting' element={<SettingProject />} />
+              <Route path='setting/:projectName' element={<SettingProject />} />
             </Route>
           </Route>
 

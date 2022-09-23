@@ -17,10 +17,6 @@ const ContentWrapper = styled(Box)(({ theme }) => ({
 const Content = () => {
   const { pathname } = useLocation();
 
-  const utf8ToText = (s) => {
-    return unescape(encodeURIComponent(s));
-  };
-
   const breadcrumbsData = pathname
     .slice(1)
     .split('/')

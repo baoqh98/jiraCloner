@@ -13,8 +13,6 @@ import {
 } from '@mui/material';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
-  faBarsProgress,
-  faBorderNone,
   faBug,
   faChartSimple,
   faFilter,
@@ -53,11 +51,13 @@ const mainMenuData = [
     label: 'Kaban Board',
     icon: <FontAwesomeIcon icon={faChartSimple} />,
     link: 'project/board',
+    redirect: 'project/create-project',
   },
   {
     label: 'Project Setting',
     icon: <FontAwesomeIcon icon={faGear} />,
     link: 'project/setting',
+    redirect: 'project/setting',
   },
 ];
 
@@ -86,6 +86,8 @@ const featuresMenuData = [
 
 const Sidebar = () => {
   const [isMouseEnterData, setIsMouseEnterData] = useState(null);
+
+  const { projectName } = useParams();
 
   return (
     <SidebarWrapper>
@@ -122,7 +124,7 @@ const Sidebar = () => {
               style={{
                 textDecoration: 'none',
               }}
-              to={item.link}
+              to={projectName ? `${item.link}/${projectName}` : item.redirect}
             >
               {({ isActive }) => (
                 <MenuItem
