@@ -114,8 +114,8 @@ const Navigation = () => {
         <Image>
           <img
             width={'100%'}
-            src='/logo-removebg-preview.png'
-            alt='/logo-removebg-preview.png'
+            src='/assets/brand/logo-removebg-preview.png'
+            alt='/assets/brand/logo-removebg-preview.png'
           />
         </Image>
         <NavItem

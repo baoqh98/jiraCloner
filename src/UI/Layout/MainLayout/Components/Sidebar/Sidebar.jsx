@@ -92,7 +92,7 @@ const Sidebar = () => {
   return (
     <SidebarWrapper>
       <ProjectOverview>
-        <img height='48px' src='/project.png' alt='project.png' />
+        <img height='48px' src='/assets/brand/project.png' alt='project.png' />
         <Box sx={{ width: '100%' }}>
           <Typography variant='subtitle2' component='h1'>
             Jira Cloner

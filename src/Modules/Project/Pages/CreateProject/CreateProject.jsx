@@ -14,7 +14,7 @@ import {
 } from '@mui/material';
 import Grid2 from '@mui/material/Unstable_Grid2/Grid2';
 import { Container } from '@mui/system';
-import RichTextEditor from '../../../../UI/Modules/RichTextEditor/RichTextEditor';
+// import RichTextEditor from '../../../../UI/Modules/RichTextEditor/RichTextEditor';
 
 import { useRequest } from '../../../../app/hooks/request/useRequest';
 import projectCategory from '../../../../app/apis/projectCategory/projectCategory';
@@ -22,8 +22,9 @@ import { useForm } from 'react-hook-form';
 
 import { useDispatch } from 'react-redux';
 import { createProjectThunk } from '../../slice/projectSlice';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import DialogProject from '../../Components/DialogProject/DialogProject';
+import LexicalEditor from '../../../../UI/Modules/LexicalEditor/LexicalEditor';
 
 //
 const { getProjectCategory } = projectCategory;
@@ -103,8 +104,10 @@ const CreateProject = () => {
     },
   });
 
-  const onSubmit = async ({ projectName }) => {
+  const onSubmit = async ({ projectName }, e) => {
     try {
+      console.log('things');
+      // console.log(projectName);
       dispatchAlert({ type: alertCase.loading });
       if (!selectedCategory) {
         dispatchAlert({
@@ -151,7 +154,6 @@ const CreateProject = () => {
   };
 
   const watchEditor = (html) => {
-    console.log(html);
     setDescription(html);
   };
 
@@ -165,13 +167,13 @@ const CreateProject = () => {
         onClose={() => setIsDialogOpen(null)}
         label='Do you want to go to project?'
       />
-      <Container sx={{ marginTop: '32px' }} maxWidth='xl'>
+      <Container sx={{ marginTop: '32px' }} maxWidth='sm'>
         <form onSubmit={handleSubmit(onSubmit)}>
           <Typography variant='h5' fontWeight={700}>
             Create New Project
           </Typography>
           <Grid2 sx={{ textAlign: 'left' }} container>
-            <Grid2 marginTop={2} xs={6}>
+            <Grid2 marginTop={2} xs={12}>
               <InputLabel
                 sx={{
                   fontSize: '14px',
@@ -212,8 +214,8 @@ const CreateProject = () => {
                 Write description
               </Typography>
             </Grid2>
-            <Grid2 xs={6}>
-              <RichTextEditor onWatch={watchEditor} content={null} />
+            <Grid2 xs={12}>
+              <LexicalEditor onWatch={watchEditor} />
             </Grid2>
           </Grid2>
           <Grid2 marginTop={2} container>
@@ -268,18 +270,16 @@ const CreateProject = () => {
               </Grid2>
             </Grid2>
           </Grid2>
-          <Grid2 marginTop={4} container>
-            <Box>
-              <Button
-                type='submit'
-                sx={{ borderRadius: '8px' }}
-                variant='contained'
-                color='primary'
-                disabled={alertState.isLoading}
-              >
-                Add Project
-              </Button>
-            </Box>
+          <Grid2 justifyContent='flex-end' marginTop={4} container>
+            <Button
+              type='submit'
+              sx={{ borderRadius: '8px' }}
+              variant='contained'
+              color='primary'
+              disabled={alertState.isLoading}
+            >
+              Add Project
+            </Button>
           </Grid2>
         </form>
         <Grid2 container>

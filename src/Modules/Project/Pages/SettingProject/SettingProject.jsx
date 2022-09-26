@@ -31,6 +31,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSave } from '@fortawesome/free-solid-svg-icons';
 import { useForm } from 'react-hook-form';
 import { useCallback } from 'react';
+import LexicalEditor from '../../../../UI/Modules/LexicalEditor/LexicalEditor';
 
 const CategorySelection = styled(Box)(({ theme }) => ({
   display: 'flex',
@@ -104,7 +105,7 @@ const SettingProject = () => {
   };
 
   const watchEditor = (html) => {
-    setDescription(html);
+    // setDescription(html);
   };
 
   const updateProjectHandler = async (e) => {
@@ -200,7 +201,7 @@ const SettingProject = () => {
                         message: 'This is required',
                       },
                       pattern: {
-                        value: /^[^'"!@#$%^&*()?,:;~`+=-]*$/,
+                        value: /^[^'"!@#$%^&*()?:;~`+=]*$/,
                         message: 'Not contain special character',
                       },
                     })}
@@ -280,8 +281,9 @@ const SettingProject = () => {
                 </Typography>
               </Grid2>
 
-              <Grid2 marginBottom={2} sx={{}} xs={12}>
-                <RichTextEditor onWatch={watchEditor} content={description} />
+              <Grid2 marginBottom={2} xs={12}>
+                {/* <RichTextEditor onWatch={watchEditor} content={description} /> */}
+                <LexicalEditor onWatch={watchEditor} content={description} />
               </Grid2>
 
               <Grid2 xs={12}>
