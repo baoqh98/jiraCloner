@@ -107,7 +107,6 @@ const CreateProject = () => {
   const onSubmit = async ({ projectName }, e) => {
     try {
       console.log('things');
-      // console.log(projectName);
       dispatchAlert({ type: alertCase.loading });
       if (!selectedCategory) {
         dispatchAlert({

@@ -65,11 +65,10 @@ const editorConfig = {
   ],
 };
 
-function MyCustomAutoFocusPlugin({ editorState, onWatch, content }) {
+function MyCustomAutoFocusPlugin({ editorState, onWatch, payload }) {
   const [editor] = useLexicalComposerContext();
 
   useEffect(() => {
-    // Focus the editor when the effect fires!
     if (editorState) {
       editor.update(() => {
         const htmlString = $generateHtmlFromNodes(editor, null);
@@ -80,13 +79,13 @@ function MyCustomAutoFocusPlugin({ editorState, onWatch, content }) {
   }, [editorState, editor, onWatch]);
 
   useEffect(() => {
-    if (content) {
-      editor.dispatchCommand(CLEAR_EDITOR_COMMAND, undefined);
-
+    console.log(payload);
+    editor.dispatchCommand(CLEAR_EDITOR_COMMAND, undefined);
+    if (payload) {
       editor.update(() => {
         const selection = $getRoot().select();
         const parser = new DOMParser();
-        const dom = parser.parseFromString(content, 'text/html');
+        const dom = parser.parseFromString(payload, 'text/html');
         const nodes = $generateNodesFromDOM(editor, dom);
 
         // Insert them at a selection.
@@ -94,12 +93,12 @@ function MyCustomAutoFocusPlugin({ editorState, onWatch, content }) {
         return;
       });
     }
-  }, [content, editor]);
+  }, [payload, editor]);
 
   return null;
 }
 
-export default function LexicalEditor({ onWatch, content }) {
+export default function LexicalEditor({ onWatch, payload }) {
   const [editorState, setEditorState] = useState(null);
 
   const onChangeHandler = (editorState) => {
@@ -127,7 +126,7 @@ export default function LexicalEditor({ onWatch, content }) {
           <MyCustomAutoFocusPlugin
             editorState={editorState}
             onWatch={onWatch}
-            content={content}
+            payload={payload}
           />
           <ListMaxIndentLevelPlugin maxDepth={7} />
           <MarkdownShortcutPlugin transformers={TRANSFORMERS} />

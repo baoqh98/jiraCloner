@@ -54,6 +54,7 @@ const SettingProject = () => {
   const [selectedProjectId, setSelectedProjectId] = useState(null);
   const [selectedCategory, setSelectedCategory] = useState(null);
   const [description, setDescription] = useState(null);
+  const [payload, setPayload] = useState(null);
   const { projects, projectDetail } = useSelector(projectSelector);
   const { data: projectCategory } = useRequest(getProjectCategory);
 
@@ -80,12 +81,18 @@ const SettingProject = () => {
     try {
       if (errors?.projectName) return;
 
-      await dispatch(getProjectDetailThunk(id)).unwrap();
+      const { description, projectCategory } = await dispatch(
+        getProjectDetailThunk(id)
+      ).unwrap();
+      setSelectedCategory(projectCategory.id);
+      setPayload(description);
       setIsEditOpen(true);
     } catch (error) {
       console.log(error);
     }
   };
+
+  console.log(payload);
 
   const selectCategoryHandler = (id) => {
     if (selectedCategory !== id) {
@@ -104,10 +111,6 @@ const SettingProject = () => {
     }
   };
 
-  const watchEditor = (html) => {
-    // setDescription(html);
-  };
-
   const updateProjectHandler = async (e) => {
     try {
       e.preventDefault();
@@ -124,30 +127,23 @@ const SettingProject = () => {
         categoryId: `${selectedCategory}`,
       };
 
-      console.log(description);
-
-      // const data = await dispatch(updateProjectThunk(updatedProject)).unwrap();
-      // console.log(data);
+      console.log(updatedProject);
     } catch (error) {
       setError('projectName', { message: error.message });
     }
   };
 
+  const watchEditor = (html) => {
+    setDescription(html);
+  };
+
   useEffect(() => {
     dispatch(getAllProjectsThunk());
 
-    if (projectDetail) {
-      const { description, projectCategory } = projectDetail;
-      setSelectedCategory(projectCategory.id);
-      setDescription(description);
-    }
-  }, [projectDetail]);
-
-  useEffect(() => {
     return () => {
       dispatch(clearProjectDetail());
     };
-  }, []);
+  }, [dispatch]);
 
   return (
     <>
@@ -283,7 +279,7 @@ const SettingProject = () => {
 
               <Grid2 marginBottom={2} xs={12}>
                 {/* <RichTextEditor onWatch={watchEditor} content={description} /> */}
-                <LexicalEditor onWatch={watchEditor} content={description} />
+                <LexicalEditor onWatch={watchEditor} payload={payload} />
               </Grid2>
 
               <Grid2 xs={12}>
