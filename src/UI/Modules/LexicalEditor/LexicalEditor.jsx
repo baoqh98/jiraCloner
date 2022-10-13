@@ -79,7 +79,6 @@ function MyCustomAutoFocusPlugin({ editorState, onWatch, payload }) {
   }, [editorState, editor, onWatch]);
 
   useEffect(() => {
-    console.log(payload);
     editor.dispatchCommand(CLEAR_EDITOR_COMMAND, undefined);
     if (payload) {
       editor.update(() => {

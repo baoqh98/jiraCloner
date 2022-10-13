@@ -51,6 +51,7 @@ export const useRequest = (fn, config = {}) => {
     try {
       dispatch({ type: requestCase.pending });
       const data = await fn(params);
+
       return data;
     } catch (error) {
       throw error;

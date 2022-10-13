@@ -7,10 +7,9 @@ import {
   Avatar,
   styled,
   Button,
-  colors,
 } from '@mui/material';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faSearch } from '@fortawesome/free-solid-svg-icons';
+import { faPlus, faSearch } from '@fortawesome/free-solid-svg-icons';
 
 const FilterWrapper = styled(Box)(({ theme }) => ({
   display: 'flex',
@@ -44,7 +43,7 @@ const FilterAction = styled(Box)(({ theme }) => ({
   marginLeft: '16px',
 }));
 
-const Filter = () => {
+const Filter = ({ dialogHandler }) => {
   const [selectedData, setSelectedData] = useState([]);
 
   const selectedFilterDataHandler = (id) => {
@@ -73,6 +72,13 @@ const Filter = () => {
 
   return (
     <FilterWrapper>
+      <Button
+        onClick={dialogHandler}
+        variant='outlined'
+        startIcon={<FontAwesomeIcon icon={faPlus} />}
+      >
+        Create Task
+      </Button>
       <TextField
         size='small'
         InputProps={{

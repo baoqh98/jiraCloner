@@ -39,11 +39,9 @@ function App() {
 
   useEffect(() => {
     dispatch(
-      // testThunkLogin({ email: fakeAuth.email, passWord: fakeAuth.passWord })
       loginHandler({ email: fakeAuth.email, passWord: fakeAuth.passWord })
-    )
-      .unwrap()
-      .then((data) => console.log(data));
+    ).unwrap();
+    // .then((data) => console.log(data))
     // .catch((error) => {
     //   if (!error) return;
     //   if (error) {

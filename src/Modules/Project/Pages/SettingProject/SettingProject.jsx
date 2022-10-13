@@ -9,6 +9,8 @@ import {
   Box,
   colors,
   Chip,
+  Card,
+  CardContent,
 } from '@mui/material';
 import Grid2 from '@mui/material/Unstable_Grid2/Grid2';
 import { alpha, Container } from '@mui/system';
@@ -30,8 +32,9 @@ import RichTextEditor from '../../../../UI/Modules/RichTextEditor/RichTextEditor
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSave } from '@fortawesome/free-solid-svg-icons';
 import { useForm } from 'react-hook-form';
-import { useCallback } from 'react';
 import LexicalEditor from '../../../../UI/Modules/LexicalEditor/LexicalEditor';
+import DialogProject from '../../Components/DialogProject/DialogProject';
+import { useNavigate } from 'react-router-dom';
 
 const CategorySelection = styled(Box)(({ theme }) => ({
   display: 'flex',
@@ -55,8 +58,11 @@ const SettingProject = () => {
   const [selectedCategory, setSelectedCategory] = useState(null);
   const [description, setDescription] = useState(null);
   const [payload, setPayload] = useState(null);
+  const [isDialogOpenData, setIsDialogOpen] = useState(null);
   const { projects, projectDetail } = useSelector(projectSelector);
   const { data: projectCategory } = useRequest(getProjectCategory);
+
+  const navigate = useNavigate();
 
   const {
     register,
@@ -92,8 +98,6 @@ const SettingProject = () => {
     }
   };
 
-  console.log(payload);
-
   const selectCategoryHandler = (id) => {
     if (selectedCategory !== id) {
       setSelectedCategory(id);
@@ -127,7 +131,8 @@ const SettingProject = () => {
         categoryId: `${selectedCategory}`,
       };
 
-      console.log(updatedProject);
+      const data = await dispatch(updateProjectThunk(updatedProject)).unwrap();
+      setIsDialogOpen(data);
     } catch (error) {
       setError('projectName', { message: error.message });
     }
@@ -147,6 +152,14 @@ const SettingProject = () => {
 
   return (
     <>
+      <DialogProject
+        isDialogOpen={!!isDialogOpenData?.id}
+        actionError='Cancel'
+        actionPrimary='Go to project  '
+        onControl={() => navigate(`/project/board/${isDialogOpenData?.id}`)}
+        onClose={() => setIsDialogOpen(null)}
+        label='Your project have been updated!'
+      />
       <Container
         sx={{
           marginTop: '24px',

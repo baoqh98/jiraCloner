@@ -30,8 +30,8 @@ code {
   background-color: #d6dee1;
   border-radius: 20px;
   border: 6px solid transparent;
-  webkit-background-clip: content-box;
   background-clip: content-box;
+  webkit-background-clip: content-box;
 }
 
 ::-webkit-scrollbar-thumb:hover {
