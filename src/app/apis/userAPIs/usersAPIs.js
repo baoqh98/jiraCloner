@@ -6,7 +6,7 @@ const usersAPIs = {
   },
 
   getUserByProjectId: (idProject) => {
-    if (idProject) return;
+    if (!idProject) return;
     return axiosClient.get('Users/getUserByProjectId', {
       params: {
         idProject: idProject,

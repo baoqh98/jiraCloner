@@ -39,16 +39,24 @@ const tagsData = [
 
 const Board = () => {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [successTrigger, setSuccessTrigger] = useState(false);
 
   const dialogHandler = () => {
     setIsDialogOpen((prev) => !prev);
+  };
+
+  const successTriggerHandler = () => {
+    setSuccessTrigger((prev) => !prev);
   };
 
   return (
     <>
       <DialogTask
         isOpen={isDialogOpen}
-        onClose={() => setIsDialogOpen(false)}
+        onClose={() => {
+          setIsDialogOpen(false);
+        }}
+        onSuccessTrigger={successTriggerHandler}
       />
       <Container maxWidth='xl'>
         <Grid marginTop={2} container>
@@ -87,7 +95,10 @@ const Board = () => {
           </Grid>
           <Grid mt={3} xs={12}>
             <Filter dialogHandler={dialogHandler} />
-            <IssueDetails />
+            <IssueDetails
+              successTrigger={successTrigger}
+              onSuccessTrigger={successTriggerHandler}
+            />
           </Grid>
         </Grid>
       </Container>

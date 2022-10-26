@@ -16,20 +16,30 @@ import { useRequest } from '../../../../app/hooks/request/useRequest';
 import { useDispatch } from 'react-redux';
 import projectAPIs from '../../../../app/apis/projectAPIs/projectAPIs';
 import { assignUserTaskThunk, createTaskThunk } from '../../slice/taskSlice';
+import { getProjectDetailThunk } from '../../../Project/slice/projectSlice';
+import { useEffect } from 'react';
 
 const { getProjectDetail } = projectAPIs;
 
-const DialogTask = ({ isOpen, onClose }) => {
+const DialogTask = ({ isOpen, onClose, onSuccessTrigger }) => {
   const { projectId } = useParams();
-  const { data: projectDetail, error } = useRequest(
-    () => getProjectDetail(+projectId),
-    { isManual: false, deps: [+projectId] }
-  );
-
   const dispatch = useDispatch();
-
+  const [projectDetail, setProjectDetail] = useState(null);
   const [submitDataForm, setSubmitDataForm] = useState(null);
   const [assignees, setListAssignees] = useState(null);
+
+  const getProjectDetailHandler = async () => {
+    try {
+      const data = dispatch(getProjectDetailThunk(projectId));
+      if (data.error) {
+        throw new Error(data.payload);
+      }
+      const result = await data.unwrap();
+      setProjectDetail(result);
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   const submitHandler = async () => {
     try {
@@ -42,22 +52,27 @@ const DialogTask = ({ isOpen, onClose }) => {
         createTaskThunk(submitTask)
       ).unwrap();
 
-      console.log(resultCreateTask.taskId);
+      assignees.forEach(async (assignee) => {
+        const res = await dispatch(
+          assignUserTaskThunk({
+            taskId: resultCreateTask.taskId,
+            userId: assignee.userId,
+          })
+        ).unwrap();
+      });
 
-      // assignees.forEach(async (assignee) => {
-      //   await dispatch(
-      //     assignUserTaskThunk({
-      //       taskId: resultCreateTask.taskId,
-      //       userId: assignee.userId,
-      //     })
-      //   ).unwrap();
-
-      //   console.log(projectDetail);
-      // });
+      getProjectDetailHandler().then(() => {
+        onSuccessTrigger();
+        onClose();
+      });
     } catch (error) {
       console.log(error);
     }
   };
+
+  useEffect(() => {
+    getProjectDetailHandler();
+  }, [projectId]);
 
   return (
     <Dialog onClose={onClose} open={isOpen}>
