@@ -25,6 +25,9 @@ import {
   faPen,
 } from '@fortawesome/free-solid-svg-icons';
 import { faCheckSquare } from '@fortawesome/free-regular-svg-icons';
+import { useEffect } from 'react';
+import { useParams } from 'react-router-dom';
+import { useDispatch } from 'react-redux';
 
 const Label = styled(InputLabel)(({ theme }) => ({
   fontSize: '12px',
@@ -110,13 +113,12 @@ const newOpts = (items) =>
 const { getAllPriority, getAllStatus, getAllTaskType } = taskAPIs;
 const { getUsers } = usersAPIs;
 
-const DialogTaskForm = () => {
+const DialogTaskForm = ({ onSubmit, members, onMemberAssign }) => {
   const { data: allStatus } = useRequest(getAllStatus);
   const { data: allPriority } = useRequest(getAllPriority);
   const { data: allTaskType } = useRequest(getAllTaskType);
-  const { data: allAssignees } = useRequest(getUsers);
 
-  const [listUserAssign, setListUserAssign] = useState('');
+  const [listUserAsign, setListUserAssign] = useState([]);
   const [taskName, setTaskName] = useState('');
   const [statusId, setStatusId] = useState('');
   const [priorityId, setPriorityId] = useState('');
@@ -126,9 +128,11 @@ const DialogTaskForm = () => {
   const [timeTrackingRemaining, setTimeTrackingRemaining] = useState('');
   const [description, setDescription] = useState('');
 
-  const listUserAssignHandler = (e) => {
-    console.log(e);
-    setListUserAssign('');
+  const listUserAsignHandler = (e, newValue) => {
+    const newUsers = newValue.map((item) => ({
+      userId: item.userId,
+    }));
+    setListUserAssign(newUsers);
   };
   const taskNameChangeHandler = (e) => {
     setTaskName(e.target.value);
@@ -140,7 +144,7 @@ const DialogTaskForm = () => {
     setPriorityId(e.target.value);
   };
   const typeIdChangeHandler = (e) => {
-    setTypeId(e.target.typeIdue);
+    setTypeId(e.target.value);
   };
   const originalEstimateChangeHandler = (e) => {
     setOriginalEstimate(e.target.value);
@@ -156,10 +160,39 @@ const DialogTaskForm = () => {
     setDescription(html);
   };
 
-  const options =
-    allAssignees?.map((item) => ({
+  useEffect(() => {
+    const task = {
+      listUserAsign: [],
+      taskName,
+      description,
+      statusId,
+      originalEstimate,
+      timeTrackingSpent,
+      timeTrackingRemaining,
+      typeId,
+      priorityId,
+    };
+
+    onMemberAssign(listUserAsign);
+    onSubmit(task);
+  }, [
+    listUserAsign,
+    taskName,
+    description,
+    statusId,
+    originalEstimate,
+    timeTrackingSpent,
+    timeTrackingRemaining,
+    typeId,
+    priorityId,
+    onSubmit,
+    onMemberAssign,
+  ]);
+
+  const assigneesOpts =
+    members?.map((item) => ({
       label: item.name,
-      id: item.userId,
+      userId: item.userId,
     })) || [];
 
   return (
@@ -231,12 +264,10 @@ const DialogTaskForm = () => {
         <StyledSelection
           onChange={priorityChangeHandler}
           value={priorityId}
-          sx={{ boxSizing: 'border-box' }}
+          sx={{ boxSizing: 'border-box', textTransform: 'capitalize' }}
           size='small'
           fullWidth
           id='priority'
-          defaultValue=''
-          placeholder='Select Assignees'
         >
           {allPriority?.map((item) => (
             <MenuItem key={item.priorityId} value={item.priorityId}>
@@ -251,19 +282,14 @@ const DialogTaskForm = () => {
         </Label>
         <StyledSelection
           onChange={typeIdChangeHandler}
-          value={typeId}
+          value={typeId || ''}
           sx={{ boxSizing: 'border-box', textTransform: 'capitalize' }}
           size='small'
           fullWidth
           id='task-type'
-          defaultValue=''
         >
           {allTaskType?.map((item) => (
-            <MenuItem
-              sx={{ textTransform: 'capitalize' }}
-              key={item.id}
-              value={item.id}
-            >
+            <MenuItem key={item.id} value={item.id}>
               {item.taskType}
             </MenuItem>
           ))}
@@ -280,10 +306,14 @@ const DialogTaskForm = () => {
             fontSize: 13,
           }}
           multiple
+          onChange={listUserAsignHandler}
           size='small'
-          options={options}
+          options={assigneesOpts}
           fullWidth
           disablePortal={false}
+          isOptionEqualToValue={(option, value) =>
+            option.userId === value.userId
+          }
           renderOption={(props, option) => (
             <MenuItem
               sx={{
@@ -291,7 +321,7 @@ const DialogTaskForm = () => {
                 padding: '8px',
               }}
               {...props}
-              key={option.id}
+              key={option.userId}
             >
               {option.label}
             </MenuItem>
@@ -311,22 +341,37 @@ const DialogTaskForm = () => {
         <Slider size='small' defaultValue={80} valueLabelDisplay='auto' />
       </Grid2>
       <Grid2 xs={3}>
-        <Label onChan htmlFor='o-estimate' sx={{ fontSize: '12px' }}>
+        <Label htmlFor='o-estimate' sx={{ fontSize: '12px' }}>
           Original Estimate
         </Label>
-        <StyledTextInput defaultValue={0} size='small' type='number' />
+        <StyledTextInput
+          onChange={originalEstimateChangeHandler}
+          value={originalEstimate}
+          size='small'
+          type='number'
+        />
       </Grid2>
       <Grid2 xs={3}>
         <Label htmlFor='o-estimate' sx={{ fontSize: '12px' }}>
           Time spent
         </Label>
-        <StyledTextInput defaultValue={0} size='small' type='number' />
+        <StyledTextInput
+          onChange={timeTrackingSpentChangeHandler}
+          value={timeTrackingSpent}
+          size='small'
+          type='number'
+        />
       </Grid2>
       <Grid2 xs={3}>
         <Label htmlFor='o-estimate' sx={{ fontSize: '12px' }}>
           Time remaining
         </Label>
-        <StyledTextInput defaultValue={0} size='small' type='number' />
+        <StyledTextInput
+          onChange={timeTrackingRemainingChangeHandler}
+          value={timeTrackingRemaining}
+          size='small'
+          type='number'
+        />
       </Grid2>
       <Grid2 xs={12}>
         <Label htmlFor='o-estimate' sx={{ fontSize: '12px' }}>

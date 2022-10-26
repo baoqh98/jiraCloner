@@ -84,7 +84,7 @@ const CreateProject = () => {
   const { data: projectCategory } = useRequest(getProjectCategory);
   const [selectedCategory, setSelectedCategory] = useState(null);
   const [description, setDescription] = useState(null);
-  const [isDialogOpenData, setIsDialogOpen] = useState(null);
+  const [isDialogOpenData, setIsDialogOpenData] = useState(null);
   const [alertState, dispatchAlert] = useReducer(
     alertReducer,
     initialAlertState
@@ -106,7 +106,6 @@ const CreateProject = () => {
 
   const onSubmit = async ({ projectName }, e) => {
     try {
-      console.log('things');
       dispatchAlert({ type: alertCase.loading });
       if (!selectedCategory) {
         dispatchAlert({
@@ -124,7 +123,7 @@ const CreateProject = () => {
       dispatchAlert({
         type: alertCase.success,
       });
-      setIsDialogOpen(data.projectName);
+      setIsDialogOpenData(data.id);
       return data;
     } catch (error) {
       console.log(error);
@@ -163,7 +162,7 @@ const CreateProject = () => {
         actionError='Cancel'
         actionPrimary='Go'
         onControl={() => navigate(`/project/board/${isDialogOpenData}`)}
-        onClose={() => setIsDialogOpen(null)}
+        onClose={() => setIsDialogOpenData(null)}
         label='Do you want to go to project?'
       />
       <Container sx={{ marginTop: '32px' }} maxWidth='sm'>

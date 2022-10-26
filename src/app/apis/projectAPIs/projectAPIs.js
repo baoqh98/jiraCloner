@@ -6,6 +6,7 @@ const projectAPIs = {
   },
 
   getProjectDetail: (id) => {
+    if (!id) return;
     return axiosClient.get('Project/getProjectDetail', {
       params: {
         id: id,

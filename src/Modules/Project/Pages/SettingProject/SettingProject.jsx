@@ -291,7 +291,6 @@ const SettingProject = () => {
               </Grid2>
 
               <Grid2 marginBottom={2} xs={12}>
-                {/* <RichTextEditor onWatch={watchEditor} content={description} /> */}
                 <LexicalEditor onWatch={watchEditor} payload={payload} />
               </Grid2>
 

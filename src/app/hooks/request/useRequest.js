@@ -6,6 +6,7 @@ const requestCase = {
   fulfilled: 'FULFILLED',
   rejected: 'REJECTED',
   finally: 'FINALLY',
+  reset: 'RESET',
 };
 
 const initialState = {
@@ -38,6 +39,8 @@ const requestReducer = (state, { type, payload }) => {
         ...state,
         isLoading: false,
       };
+    case requestCase.reset:
+      return { ...initialState };
     default:
       return state;
   }
@@ -51,7 +54,6 @@ export const useRequest = (fn, config = {}) => {
     try {
       dispatch({ type: requestCase.pending });
       const data = await fn(params);
-
       return data;
     } catch (error) {
       throw error;
@@ -70,6 +72,10 @@ export const useRequest = (fn, config = {}) => {
           dispatch({ type: requestCase.rejected, payload: error })
         );
     }
+
+    return () => {
+      dispatch({ type: requestCase.reset });
+    };
   }, deps);
 
   const result = isManual ? request : state.data;

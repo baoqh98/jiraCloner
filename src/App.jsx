@@ -68,8 +68,7 @@ function App() {
             <Route path='/project' element={<Project />} />
             <Route path='/project'>
               <Route path='create-project' element={<CreateProject />} />
-              {/* <Route path='board' element={<CreateProject />} /> */}
-              <Route path='board/:projectName' element={<Board />} />
+              <Route path='board/:projectId' element={<Board />} />
               <Route path='create-task' />
               <Route path='setting' element={<SettingProject />} />
               <Route path='setting/:projectName' element={<SettingProject />} />

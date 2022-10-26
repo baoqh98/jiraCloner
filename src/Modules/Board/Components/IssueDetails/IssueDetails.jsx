@@ -1,7 +1,10 @@
 import { colors, styled, Typography } from '@mui/material';
 import Grid2 from '@mui/material/Unstable_Grid2/Grid2';
-import { Box, Container } from '@mui/system';
+import { Box } from '@mui/system';
 import React from 'react';
+import { useParams } from 'react-router-dom';
+import { useRequest } from '../../../../app/hooks/request/useRequest';
+import projectAPIs from '../../../../app/apis/projectAPIs/projectAPIs';
 
 const CustomizedListWrapper = styled(Box)(({ theme }) => ({
   width: '100%',
@@ -16,7 +19,11 @@ const ListHeading = styled(Typography)(({ theme }) => ({
   textTransform: 'uppercase',
 }));
 
+const { getProjectDetail } = projectAPIs;
+
 const IssueDetails = () => {
+  const { projectId } = useParams();
+
   return (
     <Grid2 marginTop={3} spacing={2} container>
       <Grid2 xs={3}>
