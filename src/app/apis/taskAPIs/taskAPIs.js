@@ -29,6 +29,13 @@ const taskAPIs = {
   updateFullTask: (taskInfo) => {
     return axiosClient.post('Project/updateTask', taskInfo);
   },
+  deleteTask: (id) => {
+    return axiosClient.delete('Project/removeTask', {
+      params: {
+        taskId: id,
+      },
+    });
+  },
 
   updateStatusTask: (statusInfo) => {
     return axiosClient.put('Project/updateStatus', statusInfo);
@@ -55,14 +62,30 @@ const taskAPIs = {
       },
     });
   },
+
   insertComment: (comment) => {
     return axiosClient.post('Comment/insertComment', comment);
   },
-  editComment: (commentInfo) => {
-    return axiosClient.put('Comment/insertComment', { ...commentInfo });
+
+  editComment: ({ id, contentComment }) => {
+    return axiosClient.put(
+      'Comment/updateComment',
+      { id, contentComment },
+      {
+        params: {
+          id: id,
+          contentComment,
+        },
+      }
+    );
   },
+
   deleteComment: (id) => {
-    return axiosClient.delete('Comment/deleteComment', id);
+    return axiosClient.delete('Comment/deleteComment', {
+      params: {
+        idComment: +id,
+      },
+    });
   },
 };
 

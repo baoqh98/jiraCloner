@@ -17,15 +17,16 @@ import {
 } from '@mui/material';
 import Grid2 from '@mui/material/Unstable_Grid2/Grid2';
 import React, { useContext, useEffect, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import { taskDetailSelector } from '../../../../app/store';
+import { useDispatch } from 'react-redux';
 
 import { BoardContext } from '../../Context/BoardContext';
 import {
+  deleteTaskThunk,
   getTaskDetailThunk,
-  resetHandler,
+  resetProjectDetailHandler,
   updateFullTaskThunk,
-} from '../../slice/taskDetailSlice';
+} from '../../slice/taskSlice';
+
 import DialogTaskAssignees from './DialogTaskAssignees';
 import DialogTaskComment from './DialogTaskComment';
 import DialogTaskDateModified from './DialogTaskDateModified';
@@ -56,20 +57,47 @@ const initialUpdateTask = {
 };
 
 const DialogDetailTask = () => {
-  const { isDialogTaskDetail, taskId, toggleDialogTaskDetail, setTaskId } =
-    useContext(BoardContext);
-  const { data: taskDetail } = useSelector(taskDetailSelector);
+  const {
+    isDialogTaskDetail,
+    taskId,
+    toggleDialogTaskDetail,
+    setTaskId,
+    toggleTrigger,
+  } = useContext(BoardContext);
+
+  const [taskDetail, setTaskDetail] = useState(null);
   const [updateTask, setUpdateTask] = useState(initialUpdateTask);
 
   const dispatch = useDispatch();
 
   const closeDialogHandler = () => {
+    setTaskId(null);
+    setTaskDetail(null);
+    toggleTrigger();
     toggleDialogTaskDetail();
+  };
+
+  const getTaskDetailHandler = async () => {
+    try {
+      const res = await dispatch(getTaskDetailThunk(taskId)).unwrap();
+      setTaskDetail(res);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const deleteTaskHandler = async () => {
+    try {
+      await dispatch(deleteTaskThunk(taskId)).unwrap();
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   const updateHandler = async () => {
     try {
       const { taskId, projectId, taskName } = taskDetail;
+
       const fullyUpdatedTask = {
         listUserAsign: [0],
         taskId,
@@ -81,24 +109,14 @@ const DialogDetailTask = () => {
       // const res = await dispatch(
       //   updateFullTaskThunk(fullyUpdatedTask)
       // ).unwrap();
-      // dispatch(getTaskDetailThunk(res.taskId));
-      closeDialogHandler();
     } catch (error) {
       console.log(error);
     }
   };
-  useEffect(() => {
-    dispatch(getTaskDetailThunk(taskId));
-    return () => {
-      dispatch(resetHandler());
-    };
-  }, [taskId]);
 
   useEffect(() => {
-    return () => {
-      setTaskId(null);
-    };
-  }, []);
+    getTaskDetailHandler();
+  }, [taskId]);
 
   return (
     <Dialog
@@ -127,7 +145,11 @@ const DialogDetailTask = () => {
                 />
               </Group>
               <DialogActions>
-                <IconButton size='small' color='error'>
+                <IconButton
+                  onClick={deleteTaskHandler}
+                  size='small'
+                  color='error'
+                >
                   <FontAwesomeIcon icon={faTrash} />
                 </IconButton>
                 <IconButton
@@ -164,7 +186,7 @@ const DialogDetailTask = () => {
                   </Typography>
                   <Group align='flex-start' gap='12px'>
                     <Avatar sx={{ width: 32, height: 32 }}></Avatar>
-                    <DialogTaskComment />
+                    <DialogTaskComment taskId={taskId} />
                   </Group>
                 </Box>
               </Grid2>

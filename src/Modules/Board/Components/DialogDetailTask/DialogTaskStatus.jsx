@@ -53,6 +53,7 @@ const StatusSelect = styled(Select)(({ theme }) => ({
 }));
 
 const DialogTaskStatus = ({ taskId, payload, onSetTask }) => {
+  const { toggleTrigger } = useContext(BoardContext);
   const [statusId, setStatusId] = useState(payload);
   const { data: status } = useRequest(getAllStatus);
   const { changeStatusTask } = useContext(BoardContext);
@@ -70,8 +71,8 @@ const DialogTaskStatus = ({ taskId, payload, onSetTask }) => {
         updateStatusThunk({ statusId: statusId, taskId })
       ).unwrap();
 
-      await dispatch(getTaskDetailThunk(taskId)).unwrap();
-      changeStatusTask(statusId);
+      toggleTrigger();
+      // changeStatusTask(statusId);
     } catch (error) {
       console.log(error);
     }

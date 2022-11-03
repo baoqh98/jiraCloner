@@ -4,7 +4,6 @@ import projectAPIs from '../../../app/apis/projectAPIs/projectAPIs';
 
 const initialState = {
   projects: [],
-  projectDetail: null,
   isLoading: false,
   error: '',
 };
@@ -57,14 +56,7 @@ export const assignUserProjectThunk = thunk.request(
 const projectSlice = createSlice({
   name: 'project',
   initialState,
-  reducers: {
-    clearProjectDetail: (state) => {
-      return {
-        ...state,
-        projectDetail: null,
-      };
-    },
-  },
+  reducers: {},
   extraReducers: (builder) => {
     builder
       .addCase(getAllProjectsThunk.pending, (state) => {
