@@ -26,8 +26,6 @@ import {
 } from '@fortawesome/free-solid-svg-icons';
 import { faCheckSquare } from '@fortawesome/free-regular-svg-icons';
 import { useEffect } from 'react';
-import { useParams } from 'react-router-dom';
-import { useDispatch } from 'react-redux';
 
 const Label = styled(InputLabel)(({ theme }) => ({
   fontSize: '12px',
@@ -111,7 +109,6 @@ const newOpts = (items) =>
   }));
 
 const { getAllPriority, getAllStatus, getAllTaskType } = taskAPIs;
-const { getUsers } = usersAPIs;
 
 const DialogTaskForm = ({ onSubmit, members, onMemberAssign }) => {
   const { data: allStatus } = useRequest(getAllStatus);

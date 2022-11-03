@@ -4,17 +4,19 @@ import Grid2 from '@mui/material/Unstable_Grid2/Grid2';
 import { Box } from '@mui/system';
 import React from 'react';
 import { useParams } from 'react-router-dom';
-import projectAPIs from '../../../../app/apis/projectAPIs/projectAPIs';
 import TaskStack from '../TaskStack/TaskStack';
 import { useDispatch, useSelector } from 'react-redux';
 import { getProjectDetailTaskThunk } from '../../slice/taskSlice';
 import { tasksSelector } from '../../../../app/store';
+import { useContext } from 'react';
+import { BoardContext } from '../../Context/BoardContext';
 
 const CustomizedListWrapper = styled(Box)(({ theme }) => ({
   width: '100%',
   borderRadius: '4px',
   backgroundColor: colors.blueGrey[50],
   minHeight: '400px',
+  paddingBottom: '16px',
 }));
 
 const ListHeading = styled(Typography)(({ theme }) => ({
@@ -23,10 +25,13 @@ const ListHeading = styled(Typography)(({ theme }) => ({
   textTransform: 'uppercase',
 }));
 
-const IssueDetails = ({ successTrigger, onSuccessTrigger }) => {
+const IssueDetails = () => {
   const { projectId } = useParams();
-  const { data: projectDetail, isLoading, error } = useSelector(tasksSelector);
+  const { data: projectDetail } = useSelector(tasksSelector);
   const dispatch = useDispatch();
+
+  const { successTrigger, toggleTrigger, statusTask } =
+    useContext(BoardContext);
 
   const getProjectDetailHandler = async () => {
     try {
@@ -65,10 +70,14 @@ const IssueDetails = ({ successTrigger, onSuccessTrigger }) => {
 
   useEffect(() => {
     if (successTrigger) {
-      getProjectDetailHandler().then(() => onSuccessTrigger());
+      getProjectDetailHandler().then(() => toggleTrigger());
       return;
     }
   }, [successTrigger]);
+
+  useEffect(() => {
+    getProjectDetailHandler();
+  }, [statusTask]);
 
   return (
     <Grid2 marginTop={3} spacing={2} container>

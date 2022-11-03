@@ -13,7 +13,7 @@ const initialState = {
 };
 
 export const getProjectDetailTaskThunk = thunk.request(
-  'task/projectDetailTask',
+  'task/getProjectDetailTask',
   getProjectDetail
 );
 

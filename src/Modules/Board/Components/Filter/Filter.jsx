@@ -10,6 +10,9 @@ import {
 } from '@mui/material';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPlus, faSearch } from '@fortawesome/free-solid-svg-icons';
+import { useRequest } from '../../../../app/hooks/request/useRequest';
+import usersAPIs from '../../../../app/apis/userAPIs/usersAPIs';
+import { useParams } from 'react-router-dom';
 
 const FilterWrapper = styled(Box)(({ theme }) => ({
   display: 'flex',
@@ -43,8 +46,13 @@ const FilterAction = styled(Box)(({ theme }) => ({
   marginLeft: '16px',
 }));
 
+const { getUserByProjectId } = usersAPIs;
+
 const Filter = ({ dialogHandler }) => {
   const [selectedData, setSelectedData] = useState([]);
+
+  const { projectId } = useParams();
+  const { data: users } = useRequest(() => getUserByProjectId(+projectId));
 
   const selectedFilterDataHandler = (id) => {
     const isAvatarExist = selectedData.some((item) => item === id);
@@ -90,21 +98,21 @@ const Filter = ({ dialogHandler }) => {
         }}
       />
       <AvatarGroup>
-        {avatars.map((item) => (
+        {users?.map((item) => (
           <Avatar
             sx={(theme) => ({
               cursor: 'pointer',
               transition: 'all ease 0.1s',
-              ...styledAvatar(theme, item.id),
+              ...styledAvatar(theme, item.userId),
               '&:hover': {
                 transform: 'translateY(-4px)',
                 zIndex: 1,
               },
             })}
-            key={item.id}
-            src={item.src}
-            alt={item.alt}
-            onClick={() => selectedFilterDataHandler(item.id)}
+            key={item.userId}
+            src={item.avatar}
+            alt={item.name}
+            onClick={() => selectedFilterDataHandler(item.userId)}
           />
         ))}
       </AvatarGroup>

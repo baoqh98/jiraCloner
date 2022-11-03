@@ -48,7 +48,7 @@ const ProjectOverview = styled(Box)(({ theme }) => ({
 
 const mainMenuData = [
   {
-    label: 'Kaban Board',
+    label: 'Create New Project',
     icon: <FontAwesomeIcon icon={faChartSimple} />,
     link: 'project/board',
     redirect: 'project/create-project',

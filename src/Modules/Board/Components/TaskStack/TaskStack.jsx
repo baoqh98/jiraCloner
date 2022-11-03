@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import {
   Avatar,
   Box,
@@ -8,6 +8,14 @@ import {
   styled,
   Typography,
 } from '@mui/material';
+import { BoardContext } from '../../Context/BoardContext';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import {
+  faArrowDown,
+  faArrowUp,
+  faCheckToSlot,
+  faExclamationCircle,
+} from '@fortawesome/free-solid-svg-icons';
 
 const TaskList = styled(Box)(({ theme }) => ({
   display: 'flex',
@@ -42,49 +50,135 @@ const TaskShortInfo = styled(Box)(({ theme }) => ({
 const TaskStatus = styled(Box)(({ theme }) => ({
   display: 'flex',
   alignItems: 'center',
-  columnGap: '8px',
+  columnGap: '4px',
 }));
 
-const Priority = styled(Box)(({ theme }) => ({}));
+const TaskTypeIcons = (taskType) => {
+  const taskTypeData = [
+    {
+      taskType: 'bug',
+      icon: faExclamationCircle,
+      color: colors.red[500],
+    },
+    {
+      taskType: 'new task',
+      icon: faCheckToSlot,
+      color: colors.blue[500],
+    },
+  ];
+  const taskTypeItem = taskTypeData.find((item) => item.taskType === taskType);
 
-const TaskType = styled(Box)(({ theme }) => ({}));
+  return (
+    <Box
+      sx={{
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
+        color: taskTypeItem.color,
+        fontWeight: 500,
+        columnGap: '8px',
+      }}
+    >
+      <FontAwesomeIcon icon={taskTypeItem.icon} />
+      <Typography
+        sx={{ textTransform: 'capitalize' }}
+        variant='caption'
+        fontWeight={500}
+      >
+        {taskTypeItem.taskType}
+      </Typography>
+    </Box>
+  );
+};
+
+const PriorityIcons = (priority) => {
+  const priorityData = [
+    {
+      priority: 'High',
+      icon: faArrowUp,
+      color: colors.red[500],
+    },
+    {
+      priority: 'Medium',
+      icon: faArrowUp,
+      color: colors.orange[500],
+    },
+    {
+      priority: 'Low',
+      icon: faArrowDown,
+      color: colors.green[500],
+    },
+    {
+      priority: 'Lowest',
+      icon: faArrowDown,
+      color: colors.lightBlue[500],
+    },
+  ];
+  const priorityItem = priorityData.find((item) => item.priority === priority);
+
+  return (
+    <Box
+      sx={{
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
+        color: priorityItem.color,
+        fontWeight: 500,
+        height: '24px',
+        width: '24px',
+      }}
+    >
+      <FontAwesomeIcon icon={priorityItem.icon} />
+    </Box>
+  );
+};
 
 const TaskStack = ({ taskList }) => {
+  const { toggleDialogTaskDetail, setTaskId } = useContext(BoardContext);
+
   return (
     <TaskList>
-      {taskList?.map((item) => {
-        const { taskId, taskName, priorityTask, taskTypeDetail } = item;
-        return (
-          <TaskItem key={taskId}>
-            <TaskHeading variant='subtitle2' fontWeight={700}>
-              {taskName}
-            </TaskHeading>
-            <TaskShortInfo>
-              <TaskStatus>
-                <Priority>{priorityTask.priority}</Priority>
-                <TaskType>{taskTypeDetail.taskType}</TaskType>
-              </TaskStatus>
-              <AvatarGroup max={3}>
-                <Avatar
-                  sx={{ width: 24, height: 24 }}
-                  alt='Remy Sharp'
-                  src='/static/images/avatar/1.jpg'
-                />
-                <Avatar
-                  sx={{ width: 24, height: 24 }}
-                  alt='Remy Sharp'
-                  src='/static/images/avatar/1.jpg'
-                />
-                <Avatar
-                  sx={{ width: 24, height: 24 }}
-                  alt='Remy Sharp'
-                  src='/static/images/avatar/1.jpg'
-                />
-              </AvatarGroup>
-            </TaskShortInfo>
-          </TaskItem>
-        );
-      })}
+      {taskList
+        ?.map((item) => {
+          const { taskId, taskName, priorityTask, taskTypeDetail } = item;
+          return (
+            <TaskItem
+              onClick={() => {
+                toggleDialogTaskDetail();
+                setTaskId(taskId);
+              }}
+              key={taskId}
+            >
+              <TaskHeading variant='subtitle2' fontWeight={700}>
+                {taskName}
+              </TaskHeading>
+              <TaskShortInfo>
+                <TaskStatus>
+                  {PriorityIcons(priorityTask.priority)}
+                  {TaskTypeIcons(taskTypeDetail.taskType)}
+                </TaskStatus>
+                <AvatarGroup max={3}>
+                  <Avatar
+                    sx={{ width: 24, height: 24 }}
+                    alt='Remy Sharp'
+                    src='/static/images/avatar/1.jpg'
+                  />
+                  <Avatar
+                    sx={{ width: 24, height: 24 }}
+                    alt='Remy Sharp'
+                    src='/static/images/avatar/1.jpg'
+                  />
+                  <Avatar
+                    sx={{ width: 24, height: 24 }}
+                    alt='Remy Sharp'
+                    src='/static/images/avatar/1.jpg'
+                  />
+                </AvatarGroup>
+              </TaskShortInfo>
+            </TaskItem>
+          );
+        })
+        .reverse()}
     </TaskList>
   );
 };

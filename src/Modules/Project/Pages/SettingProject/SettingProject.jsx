@@ -27,7 +27,6 @@ import {
   getProjectDetailThunk,
   updateProjectThunk,
 } from '../../slice/projectSlice';
-import RichTextEditor from '../../../../UI/Modules/RichTextEditor/RichTextEditor';
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSave } from '@fortawesome/free-solid-svg-icons';

@@ -218,8 +218,8 @@ const Project = () => {
             </Typography>
           )
         }
-        actionError='Cancel'
-        actionPrimary='Delete'
+        actionError={alertState.successMessage ? 'Close' : 'Cancel'}
+        actionPrimary={alertState.successMessage ? null : 'Delete'}
         payload={projectPayload}
         onControl={() => deleteProjectHandler(projectPayload.id)}
       />

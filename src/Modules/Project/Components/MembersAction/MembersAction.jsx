@@ -32,13 +32,11 @@ import Draggable from 'react-draggable';
 import { useRequest } from '../../../../app/hooks/request/useRequest';
 import { alertCase, useAlert } from '../../../../app/hooks/alert/useAlert';
 import usersAPIs from '../../../../app/apis/userAPIs/usersAPIs';
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import {
   assignUserProjectThunk,
   removeUserFromProjectThunk,
 } from '../../slice/projectSlice';
-import { getUserByProjectIdThunk } from '../../slice/membersSlice';
-import { membersSelector } from '../../../../app/store';
 
 const MembersActionWrapper = styled(Paper)(({ theme }) => ({
   position: 'absolute',
@@ -124,7 +122,6 @@ const MembersAction = React.memo(
     const [isExpand, setIsExpand] = useState(false);
     const [userId, setUserId] = useState(null);
     const { alertState, dispatchAlert } = useAlert();
-
     const dispatch = useDispatch();
 
     const handleCloseSnack = (event, reason) => {
@@ -173,7 +170,6 @@ const MembersAction = React.memo(
           return data;
         } catch (error) {
           setMembers([]);
-          return error;
         }
       },
       [requestGet]

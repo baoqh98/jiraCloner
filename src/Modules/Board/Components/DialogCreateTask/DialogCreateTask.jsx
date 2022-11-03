@@ -1,3 +1,4 @@
+import { useEffect, useContext } from 'react';
 import {
   Box,
   Button,
@@ -12,14 +13,10 @@ import {
 import React, { useState } from 'react';
 import DialogTaskForm from './DialogTaskForm';
 import { useParams } from 'react-router-dom';
-import { useRequest } from '../../../../app/hooks/request/useRequest';
 import { useDispatch } from 'react-redux';
-import projectAPIs from '../../../../app/apis/projectAPIs/projectAPIs';
 import { assignUserTaskThunk, createTaskThunk } from '../../slice/taskSlice';
 import { getProjectDetailThunk } from '../../../Project/slice/projectSlice';
-import { useEffect } from 'react';
-
-const { getProjectDetail } = projectAPIs;
+import { BoardContext } from '../../Context/BoardContext';
 
 const DialogTask = ({ isOpen, onClose, onSuccessTrigger }) => {
   const { projectId } = useParams();
@@ -27,6 +24,8 @@ const DialogTask = ({ isOpen, onClose, onSuccessTrigger }) => {
   const [projectDetail, setProjectDetail] = useState(null);
   const [submitDataForm, setSubmitDataForm] = useState(null);
   const [assignees, setListAssignees] = useState(null);
+
+  const { successTrigger, toggleTrigger } = useContext(BoardContext);
 
   const getProjectDetailHandler = async () => {
     try {
@@ -62,7 +61,7 @@ const DialogTask = ({ isOpen, onClose, onSuccessTrigger }) => {
       });
 
       getProjectDetailHandler().then(() => {
-        onSuccessTrigger();
+        toggleTrigger();
         onClose();
       });
     } catch (error) {

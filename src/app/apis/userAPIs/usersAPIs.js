@@ -7,10 +7,10 @@ const usersAPIs = {
 
   getUserByProjectId: (idProject) => {
     if (!idProject) return;
+    const params = new URLSearchParams();
+    params.append('idProject', idProject);
     return axiosClient.get('Users/getUserByProjectId', {
-      params: {
-        idProject: idProject,
-      },
+      params,
     });
   },
 

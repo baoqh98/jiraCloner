@@ -27,10 +27,10 @@ function App() {
   const dispatch = useDispatch();
 
   const fakeAuth = {
-    email: 'fakeauth@mail.com',
+    email: 'fakeauth@gmail.com',
     passWord: 'fakeauth',
     name: 'fakeauth',
-    phoneNumber: '010101',
+    phoneNumber: 'fakeauth',
   };
 
   dispatch(
