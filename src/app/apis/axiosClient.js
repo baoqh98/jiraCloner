@@ -9,6 +9,9 @@ export const axiosClient = axios.create({
   },
 });
 
+const accessToken =
+  'axiosClient.js:23 eyJhbGciOiJodHRwOi8vd3d3LnczLm9yZy8yMDAxLzA0L3htbGRzaWctbW9yZSNobWFjLXNoYTI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9lbWFpbGFkZHJlc3MiOiJmYWtlYXV0aEBnbWFpbC5jb20iLCJuYmYiOjE2Njc0Nzc0NzMsImV4cCI6MTY2NzQ4MTA3M30.dd7X_nsYffk_XiowXo81rSmAw2goI52TrP03FzE5N1g';
+
 axiosClient.interceptors.response.use(
   (response) => {
     return response.data.content;
@@ -20,6 +23,7 @@ axiosClient.interceptors.response.use(
 
 axiosClient.interceptors.request.use((config) => {
   const accessToken = store.getState().auth.data?.accessToken;
+  console.log(accessToken);
   config.headers.Authorization = `Bearer ${accessToken}`;
   return config;
 });

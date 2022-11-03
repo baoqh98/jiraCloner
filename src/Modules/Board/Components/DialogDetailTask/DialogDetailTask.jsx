@@ -24,7 +24,7 @@ import { BoardContext } from '../../Context/BoardContext';
 import {
   getTaskDetailThunk,
   resetHandler,
-  updateTaskThunk,
+  updateFullTaskThunk,
 } from '../../slice/taskDetailSlice';
 import DialogTaskAssignees from './DialogTaskAssignees';
 import DialogTaskComment from './DialogTaskComment';
@@ -69,16 +69,19 @@ const DialogDetailTask = () => {
 
   const updateHandler = async () => {
     try {
-      const { taskId, taskName, projectId } = taskDetail;
+      const { taskId, projectId, taskName } = taskDetail;
       const fullyUpdatedTask = {
         listUserAsign: [0],
-        taskName,
-        taskId: taskId,
+        taskId,
         projectId,
+        taskName,
         ...updateTask,
       };
       console.log(fullyUpdatedTask);
-      await dispatch(updateTaskThunk(fullyUpdatedTask)).unwrap();
+      // const res = await dispatch(
+      //   updateFullTaskThunk(fullyUpdatedTask)
+      // ).unwrap();
+      // dispatch(getTaskDetailThunk(res.taskId));
       closeDialogHandler();
     } catch (error) {
       console.log(error);
@@ -86,9 +89,9 @@ const DialogDetailTask = () => {
   };
   useEffect(() => {
     dispatch(getTaskDetailThunk(taskId));
-    return () => {
-      dispatch(resetHandler());
-    };
+    // return () => {
+    //   dispatch(resetHandler());
+    // };
   }, [taskId]);
 
   useEffect(() => {
@@ -141,7 +144,7 @@ const DialogDetailTask = () => {
             <Grid2 spacing={4} container>
               <Grid2 xs={7}>
                 <Box sx={{ marginBottom: '24px' }}>
-                  <Typography mb={1} variant='body2' fontWeight={700}>
+                  <Typography mb={1} variant='h4' fontWeight={700}>
                     {taskDetail.taskName}
                   </Typography>
                 </Box>

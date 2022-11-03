@@ -22,7 +22,7 @@ export const getTaskDetailThunk = thunk.request(
   getTaskDetail
 );
 
-export const updateTaskThunk = thunk.request(
+export const updateFullTaskThunk = thunk.request(
   'taskDetail/updateTask',
   updateFullTask
 );
