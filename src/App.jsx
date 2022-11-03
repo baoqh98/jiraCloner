@@ -23,7 +23,6 @@ const CreateProject = React.lazy(() =>
 );
 
 function App() {
-  // const { data, isLoading, error } = useSelector(authSelector);
   const dispatch = useDispatch();
 
   const fakeAuth = {
@@ -42,7 +41,7 @@ function App() {
       loginHandler({ email: fakeAuth.email, passWord: fakeAuth.passWord })
     )
       .unwrap()
-      .then((data) => console.log(data))
+      .then()
       .catch((error) => {
         if (!error) return;
         if (error) {
