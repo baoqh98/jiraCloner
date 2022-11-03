@@ -16,5 +16,5 @@ export const store = configureStore({
 export const projectSelector = (state) => state.project;
 export const authSelector = (state) => state.auth;
 export const membersSelector = (state) => state.members;
-export const tasksSelector = (state) => state.task;
+export const taskSelector = (state) => state.task;
 export const taskDetailSelector = (state) => state.taskDetail;

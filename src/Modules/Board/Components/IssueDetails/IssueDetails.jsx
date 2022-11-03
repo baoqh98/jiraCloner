@@ -6,8 +6,11 @@ import React from 'react';
 import { useParams } from 'react-router-dom';
 import TaskStack from '../TaskStack/TaskStack';
 import { useDispatch, useSelector } from 'react-redux';
-import { getProjectDetailTaskThunk } from '../../slice/taskSlice';
-import { tasksSelector } from '../../../../app/store';
+import {
+  getProjectDetailTaskThunk,
+  resetProjectDetailHandler,
+} from '../../slice/taskSlice';
+import { taskSelector } from '../../../../app/store';
 import { useContext } from 'react';
 import { BoardContext } from '../../Context/BoardContext';
 
@@ -27,7 +30,7 @@ const ListHeading = styled(Typography)(({ theme }) => ({
 
 const IssueDetails = () => {
   const { projectId } = useParams();
-  const { data: projectDetail } = useSelector(tasksSelector);
+  const { data: projectDetail } = useSelector(taskSelector);
   const dispatch = useDispatch();
 
   const { successTrigger, toggleTrigger, statusTask } =
@@ -66,6 +69,10 @@ const IssueDetails = () => {
 
   useEffect(() => {
     getProjectDetailHandler();
+
+    return () => {
+      dispatch(resetProjectDetailHandler());
+    };
   }, []);
 
   useEffect(() => {

@@ -3,7 +3,13 @@ import thunk from '../../../app/apis/helper/thunk';
 import projectAPIs from '../../../app/apis/projectAPIs/projectAPIs';
 import taskAPIs from '../../../app/apis/taskAPIs/taskAPIs';
 
-const { createTask, assignUserTask } = taskAPIs;
+const {
+  createTask,
+  assignUserTask,
+  updateFullTask,
+  getTaskDetail,
+  deleteTask,
+} = taskAPIs;
 const { getProjectDetail } = projectAPIs;
 
 const initialState = {
@@ -16,6 +22,15 @@ export const getProjectDetailTaskThunk = thunk.request(
   'task/getProjectDetailTask',
   getProjectDetail
 );
+export const getTaskDetailThunk = thunk.request(
+  'task/getTaskDetail',
+  getTaskDetail
+);
+export const updateFullTaskThunk = thunk.request(
+  'task/updateTask',
+  updateFullTask
+);
+export const deleteTaskThunk = thunk.request('task/deleteTask', deleteTask);
 
 export const createTaskThunk = thunk.request('task/createTask', createTask);
 
@@ -27,7 +42,13 @@ export const assignUserTaskThunk = thunk.request(
 const taskSlice = createSlice({
   name: 'task',
   initialState,
-  reducers: {},
+  reducers: {
+    resetProjectDetailHandler: (state) => {
+      state.data = null;
+      state.isLoading = false;
+      state.error = '';
+    },
+  },
   extraReducers: (builder) => {
     builder
       .addCase(getProjectDetailTaskThunk.pending, (state) => {
@@ -44,4 +65,5 @@ const taskSlice = createSlice({
   },
 });
 
+export const { resetProjectDetailHandler } = taskSlice.actions;
 export default taskSlice.reducer;

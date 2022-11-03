@@ -3,12 +3,10 @@ import thunk from '../../../app/apis/helper/thunk';
 import taskAPIs from '../../../app/apis/taskAPIs/taskAPIs';
 
 const {
-  getTaskDetail,
   updateStatusTask,
   updatePriorityTask,
   updateDescriptionTask,
   updateEstimatedHour,
-  updateFullTask,
 } = taskAPIs;
 
 const initialState = {
@@ -16,16 +14,6 @@ const initialState = {
   isLoading: false,
   error: '',
 };
-
-export const getTaskDetailThunk = thunk.request(
-  'taskDetail/getTaskDetail',
-  getTaskDetail
-);
-
-export const updateFullTaskThunk = thunk.request(
-  'taskDetail/updateTask',
-  updateFullTask
-);
 
 export const updateStatusThunk = thunk.request(
   'taskDetail/updateStatus',
@@ -51,26 +39,26 @@ const taskDetailSlice = createSlice({
   name: 'taskDetail',
   initialState,
   reducers: {
-    resetHandler: (state) => {
-      state.data = null;
-      state.isLoading = false;
-      state.error = '';
-    },
+    // resetHandler: (state) => {
+    //   state.data = null;
+    //   state.isLoading = false;
+    //   state.error = '';
+    // },
   },
-  extraReducers: (builder) => {
-    builder
-      .addCase(getTaskDetailThunk.pending, (state) => {
-        state.isLoading = true;
-      })
-      .addCase(getTaskDetailThunk.fulfilled, (state, { payload }) => {
-        state.isLoading = false;
-        state.data = payload;
-      })
-      .addCase(getTaskDetailThunk.rejected, (state, { payload }) => {
-        state.isLoading = false;
-        state.error = payload;
-      });
-  },
+  // extraReducers: (builder) => {
+  //   builder
+  //     .addCase(getTaskDetailThunk.pending, (state) => {
+  //       state.isLoading = true;
+  //     })
+  //     .addCase(getTaskDetailThunk.fulfilled, (state, { payload }) => {
+  //       state.isLoading = false;
+  //       state.data = payload;
+  //     })
+  //     .addCase(getTaskDetailThunk.rejected, (state, { payload }) => {
+  //       state.isLoading = false;
+  //       state.error = payload;
+  //     });
+  // },
 });
 
 export const { resetHandler } = taskDetailSlice.actions;
