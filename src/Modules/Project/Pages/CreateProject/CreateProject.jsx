@@ -161,7 +161,7 @@ const CreateProject = () => {
         isDialogOpen={!!isDialogOpenData}
         actionError='Cancel'
         actionPrimary='Go'
-        onControl={() => navigate(`/project/board/${isDialogOpenData}`)}
+        onControl={() => navigate(`/board/${isDialogOpenData}`)}
         onClose={() => setIsDialogOpenData(null)}
         label='Do you want to go to project?'
       />

@@ -50,14 +50,14 @@ const mainMenuData = [
   {
     label: 'Create New Project',
     icon: <FontAwesomeIcon icon={faChartSimple} />,
-    link: 'project/board',
-    redirect: 'project/create-project',
+    link: '/board',
+    redirect: '/create-project',
   },
   {
     label: 'Project Setting',
     icon: <FontAwesomeIcon icon={faGear} />,
-    link: 'project/setting',
-    redirect: 'project/setting',
+    link: '/setting',
+    redirect: '/setting',
   },
 ];
 

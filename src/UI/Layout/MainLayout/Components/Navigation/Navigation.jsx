@@ -120,7 +120,7 @@ const Navigation = () => {
         </Image>
         <NavItem
           onClick={() => {
-            navigate('/project');
+            navigate('/');
           }}
           sx={{ ...navItemStyle() }}
         >
@@ -143,7 +143,7 @@ const Navigation = () => {
           sx={{ ...navItemStyle() }}
           onClick={() => {
             setIsProjectManager(true);
-            navigate('/project');
+            navigate('/');
           }}
         >
           <InputLabel htmlFor='searchProject'>
@@ -173,7 +173,7 @@ const Navigation = () => {
         </NavItem>
         <NavItem
           sx={{ ...navItemStyle() }}
-          onClick={() => navigate('/project/create-project')}
+          onClick={() => navigate('/create-project')}
         >
           <IconButton sx={{ ...iconButtonStyle() }}>
             <FontAwesomeIcon icon={faPlus} />

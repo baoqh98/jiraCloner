@@ -40,17 +40,18 @@ function App() {
   useEffect(() => {
     dispatch(
       loginHandler({ email: fakeAuth.email, passWord: fakeAuth.passWord })
-    ).unwrap();
-    // .then((data) => console.log(data))
-    // .catch((error) => {
-    //   if (!error) return;
-    //   if (error) {
-    //     dispatch(signUpHandler(fakeAuth))
-    //       .unwrap()
-    //       .then((data) => console.log(data))
-    //       .catch((err) => console.log(err));
-    //   }
-    // });
+    )
+      .unwrap()
+      .then((data) => console.log(data))
+      .catch((error) => {
+        if (!error) return;
+        if (error) {
+          dispatch(signUpHandler(fakeAuth))
+            .unwrap()
+            .then()
+            .catch((err) => console.log(err));
+        }
+      });
   }, []);
 
   return (
@@ -65,8 +66,8 @@ function App() {
       >
         <Routes>
           <Route path='/' element={<MainLayout />}>
-            <Route path='/project' element={<Project />} />
-            <Route path='/project'>
+            <Route path='/' element={<Project />} />
+            <Route path='/'>
               <Route path='create-project' element={<CreateProject />} />
               <Route path='board/:projectId' element={<Board />} />
               <Route path='create-task' />

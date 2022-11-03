@@ -107,7 +107,7 @@ const Project = () => {
       >
         <TableCellBody>
           <Chip
-            onClick={() => navigate(`/project/board/${id}`)}
+            onClick={() => navigate(`/board/${id}`)}
             color={`${creator.name === userData.name ? 'success' : 'info'}`}
             size='small'
             sx={(theme) => ({
