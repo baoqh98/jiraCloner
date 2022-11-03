@@ -45,6 +45,25 @@ const taskAPIs = {
   updateEstimatedHour: (hoursInfo) => {
     return axiosClient.put('Project/updateEstimate', hoursInfo);
   },
+
+  // COMMENT
+  getComments: (taskId) => {
+    if (!taskId) return;
+    return axiosClient.get('Comment/getAll', {
+      params: {
+        taskId,
+      },
+    });
+  },
+  insertComment: (comment) => {
+    return axiosClient.post('Comment/insertComment', comment);
+  },
+  editComment: (commentInfo) => {
+    return axiosClient.put('Comment/insertComment', { ...commentInfo });
+  },
+  deleteComment: (id) => {
+    return axiosClient.delete('Comment/deleteComment', id);
+  },
 };
 
 export default taskAPIs;
