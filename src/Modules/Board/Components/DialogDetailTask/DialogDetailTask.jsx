@@ -89,9 +89,9 @@ const DialogDetailTask = () => {
   };
   useEffect(() => {
     dispatch(getTaskDetailThunk(taskId));
-    // return () => {
-    //   dispatch(resetHandler());
-    // };
+    return () => {
+      dispatch(resetHandler());
+    };
   }, [taskId]);
 
   useEffect(() => {
