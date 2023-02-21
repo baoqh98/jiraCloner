@@ -108,7 +108,7 @@ const Project = () => {
         <TableCellBody>
           <Chip
             onClick={() => navigate(`/board/${id}`)}
-            color={`${creator.name === userData.name ? 'success' : 'info'}`}
+            color={`${creator?.name === userData?.name ? 'success' : 'info'}`}
             size='small'
             sx={(theme) => ({
               borderRadius: '4px',
@@ -120,7 +120,7 @@ const Project = () => {
               },
             })}
             variant={`${
-              creator.name === userData.name ? 'contained' : 'outlined'
+              creator?.name === userData?.name ? 'contained' : 'outlined'
             }`}
             label={`ID: ${id}`}
           />

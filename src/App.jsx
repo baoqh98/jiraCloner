@@ -12,9 +12,6 @@ import Board from './Modules/Board/Pages/Board';
 import Loader from './UI/Display/Loader/Loader';
 import { authSelector } from './app/store';
 import SettingProject from './Modules/Project/Pages/SettingProject';
-// import CreateProject from './Modules/Project/Pages/CreateProject';
-// import Project from './Modules/Project/Pages/Project';
-// import MainLayout from './UI/Layout/MainLayout';
 
 const MainLayout = React.lazy(() => import('./UI/Layout/MainLayout/Pages'));
 const Project = React.lazy(() => import('./Modules/Project/Pages/Project'));
@@ -26,10 +23,8 @@ function App() {
   const dispatch = useDispatch();
 
   const fakeAuth = {
-    email: 'fakeauth@gmail.com',
-    passWord: 'fakeauth',
-    name: 'fakeauth',
-    phoneNumber: 'fakeauth',
+    email: 'string',
+    password: 'string',
   };
 
   dispatch(
@@ -69,9 +64,7 @@ function App() {
             <Route path='/'>
               <Route path='create-project' element={<CreateProject />} />
               <Route path='board/:projectId' element={<Board />} />
-              <Route path='create-task' />
               <Route path='setting' element={<SettingProject />} />
-              <Route path='setting/:projectName' element={<SettingProject />} />
             </Route>
           </Route>
 

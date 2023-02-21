@@ -18,7 +18,6 @@ export const signUpHandler = createAsyncThunk(
       const data = await signUp(userInfo);
       return data;
     } catch (error) {
-      console.log(error);
       return rejectWithValue(error);
     }
   }

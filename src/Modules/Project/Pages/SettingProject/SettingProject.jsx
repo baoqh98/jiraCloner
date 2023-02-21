@@ -147,7 +147,7 @@ const SettingProject = () => {
     return () => {
       dispatch(clearProjectDetail());
     };
-  }, [dispatch]);
+  }, []);
 
   return (
     <>
@@ -155,7 +155,7 @@ const SettingProject = () => {
         isDialogOpen={!!isDialogOpenData?.id}
         actionError='Cancel'
         actionPrimary='Go to project  '
-        onControl={() => navigate(`/project/board/${isDialogOpenData?.id}`)}
+        onControl={() => navigate(`/board/${isDialogOpenData?.id}`)}
         onClose={() => setIsDialogOpen(null)}
         label='Your project have been updated!'
       />

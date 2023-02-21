@@ -1,16 +1,16 @@
-import axios, { AxiosError } from 'axios';
+import axios from 'axios';
 import { store } from '../store';
 
 export const axiosClient = axios.create({
   baseURL: 'https://jiranew.cybersoft.edu.vn/api/',
   headers: {
     TokenCyberSoft:
-      'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0ZW5Mb3AiOiJCb290Y2FtcCAzMiIsIkhldEhhblN0cmluZyI6IjE1LzA0LzIwMjMiLCJIZXRIYW5UaW1lIjoiMTY4MTUxNjgwMDAwMCIsIm5iZiI6MTY1MzkzMDAwMCwiZXhwIjoxNjgxNjY0NDAwfQ.oR9K8iSTqbo-t0Q_a-WFnKePPaMAr7sdlgR5xKAtQWA',
+      'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0ZW5Mb3AiOiJCb290Y2FtcCA0MiIsIkhldEhhblN0cmluZyI6IjMwLzA5LzIwMjMiLCJIZXRIYW5UaW1lIjoiMTY5NjAzMjAwMDAwMCIsIm5iZiI6MTY2NzA2MjgwMCwiZXhwIjoxNjk2MTc5NjAwfQ.i6JqYnGkwyHl6dkDHnjFWbPfBEl2l4SXAp4r7h9Ecpw',
   },
 });
 
 const accessToken =
-  'eyJhbGciOiJodHRwOi8vd3d3LnczLm9yZy8yMDAxLzA0L3htbGRzaWctbW9yZSNobWFjLXNoYTI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9lbWFpbGFkZHJlc3MiOiJmYWtlYXV0aEBnbWFpbC5jb20iLCJuYmYiOjE2Njc0Nzc0NzMsImV4cCI6MTY2NzQ4MTA3M30.dd7X_nsYffk_XiowXo81rSmAw2goI52TrP03FzE5N1g';
+  'eyJhbGciOiJodHRwOi8vd3d3LnczLm9yZy8yMDAxLzA0L3htbGRzaWctbW9yZSNobWFjLXNoYTI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9lbWFpbGFkZHJlc3MiOiJzdHJpbmciLCJuYmYiOjE2NzY5NTk3NTcsImV4cCI6MTY3Njk2MzM1N30.IesCy9bBj_VOZJ5QfxebSIj1KwzXi4uO7TvXH-QEfJY';
 
 axiosClient.interceptors.response.use(
   (response) => {
@@ -22,7 +22,7 @@ axiosClient.interceptors.response.use(
 );
 
 axiosClient.interceptors.request.use((config) => {
-  const accessToken = store.getState().auth.data?.accessToken;
+  // const accessToken = store.getState().auth.data?.accessToken;
   config.headers.Authorization = `Bearer ${accessToken}`;
   return config;
 });

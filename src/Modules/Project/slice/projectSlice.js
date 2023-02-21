@@ -56,7 +56,11 @@ export const assignUserProjectThunk = thunk.request(
 const projectSlice = createSlice({
   name: 'project',
   initialState,
-  reducers: {},
+  reducers: {
+    clearProjectDetail: () => {
+      return initialState;
+    },
+  },
   extraReducers: (builder) => {
     builder
       .addCase(getAllProjectsThunk.pending, (state) => {
